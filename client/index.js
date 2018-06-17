@@ -12,6 +12,7 @@ import SignupForm from './components/SignupForm';
 import InvoiceSearch from './components/InvoiceSearch';
 import InvoiceEdit from './components/InvoiceEdit';
 import InvoiceCreate from './components/InvoiceCreate';
+import AssetSearch from './components/AssetSearch';
 import requireAuth from './components/requireAuth';
 import { DatePicker } from 'antd';
 
@@ -50,6 +51,7 @@ const Root = () => {
           <Route path="invoiceCreate" component={requireAuth(InvoiceCreate)} />
           <Route path="invoiceSearch" component={requireAuth(InvoiceSearch)} />
           <Route path="invoiceEdit/:id" component={requireAuth(InvoiceEdit)} />
+          <Route path="assetSearch" component={requireAuth(AssetSearch)} />
         </Route>
       </Router>
     </ApolloProvider>

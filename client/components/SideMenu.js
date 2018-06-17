@@ -44,6 +44,9 @@ class SideMenu extends Component {
                     <Menu.Item key="invoiceSearch">
                         <Link to="/invoiceSearch">Search</Link>
                     </Menu.Item>
+                    <Menu.Item key="assetSearch">
+                        <Link to="/assetSearch">Search Assets</Link>
+                    </Menu.Item>
                 </Menu>
             </Sider>
         );

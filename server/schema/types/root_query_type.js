@@ -2,10 +2,12 @@ const graphql = require('graphql');
 const { GraphQLObjectType, GraphQLID, GraphQLString, GraphQLList, GraphQLInt, GraphQLFloat } = graphql;
 const UserType = require('./user_type');
 const InvoiceSearchType = require('./invoiceSearch_type');
+const AssetMasterType = require('./asset_master_type');
 const InvoiceStatusesType = require('./invoiceStatuses_type');
 const ContractsType = require('./contracts_type');
 const InvoiceLookupType = require('./invoiceLookup_type');
 const InvoiceService = require('../../services/invoice');
+const AssetMasterService = require('../../services/assetMaster');
 const GraphQLDate = require('graphql-date');
 
 const RootQueryType = new GraphQLObjectType({
@@ -15,6 +17,16 @@ const RootQueryType = new GraphQLObjectType({
       type: UserType,
       resolve(parentValue, args, req) {
         return req.user;
+      }
+    },
+    assetMaster: {
+      type: new GraphQLList(AssetMasterType),
+      args: {
+        name: { type: GraphQLString },
+        description: { type: GraphQLString }
+      },
+      resolve(parentValue, args) {
+        return AssetMasterService.find(args.name, args.description);
       }
     },
     InvoiceSearch: {
