@@ -6,7 +6,9 @@ const AssetMasterType = require('./asset_master_type');
 const InvoiceStatusesType = require('./invoiceStatuses_type');
 const ContractsType = require('./contracts_type');
 const InvoiceLookupType = require('./invoiceLookup_type');
+const HierarchyTypeType = require('./hierarchyType_type');
 const InvoiceService = require('../../services/invoice');
+const LookupService = require('../../services/lookup');
 const AssetMasterService = require('../../services/assetMaster');
 const GraphQLDate = require('graphql-date');
 
@@ -17,6 +19,12 @@ const RootQueryType = new GraphQLObjectType({
       type: UserType,
       resolve(parentValue, args, req) {
         return req.user;
+      }
+    },
+    hierarchyType: {
+      type: new GraphQLList(HierarchyTypeType),
+      resolve() {
+        return LookupService.getAll();
       }
     },
     assetMaster: {

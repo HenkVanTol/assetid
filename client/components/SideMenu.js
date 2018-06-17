@@ -47,6 +47,9 @@ class SideMenu extends Component {
                     <Menu.Item key="assetSearch">
                         <Link to="/assetSearch">Search Assets</Link>
                     </Menu.Item>
+                    <Menu.Item key="assetCreate">
+                        <Link to="/assetCreate">Create Asset</Link>
+                    </Menu.Item>
                 </Menu>
             </Sider>
         );
