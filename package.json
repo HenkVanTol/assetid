@@ -50,7 +50,7 @@
     "moment": "^2.21.0",
     "mssql": "^4.1.0",
     "mssql-session-store": "^1.0.0",
-    "nodemon": "^1.17.1",
+    "nodemon": "^1.17.5",
     "passport": "^0.3.2",
     "passport-local": "^1.0.0",
     "react": "^15.4.2",
@@ -65,7 +65,8 @@
     "url-loader": "^0.6.2",
     "webpack": "^2.2.0",
     "webpack-dev-middleware": "^1.9.0",
-    "write-file-webpack-plugin": "^4.2.0"
+    "write-file-webpack-plugin": "^4.2.0",
+    "mysql": "^2.15.0"
   },
   "devDependencies": {}
 }

@@ -4,7 +4,7 @@ const session = require('express-session');
 const passport = require('passport');
 const passportConfig = require('./services/auth');
 const schema = require('./schema/schema');
-const MSSQLStore = require('connect-mssql')(session);
+const MySQLStore = require('express-mysql-session')(session);
 const db = require('./db');
 const authService = require('./services/auth');
 //const flash = require('connect-flash');
@@ -13,19 +13,41 @@ const authService = require('./services/auth');
 const app = express();
 
 //MSSQL connection settings
+// const options = {
+//   user: 'sa',
+//   password: '',
+//   server: 'localhost',
+//   database: 'MultiPick',
+//   // options: {
+//   //     encrypt: true // Use this if you're on Windows Azure
+//   // }
+// };
+
+//MySQL connection settings
 const options = {
-  user: 'sa',
-  password: 'Trancend123',
-  server: 'localhost',
-  database: 'MultiPick',
-  // options: {
-  //     encrypt: true // Use this if you're on Windows Azure
-  // }
+  host: 'localhost',
+  port: 3306,
+  user: 'root',
+  password: 'Mechanics!',
+  database: 'assetid'
 };
 
-db.connect(options)
-  .then(console.log("MSSQL CONNECTION POOL CREATED."))
-  .catch(error => console.log("UNABLE TO CONNECT TO MSSQL: ", error));
+// db.connect(options)
+//   .then(console.log("MSSQL CONNECTION POOL CREATED."))
+//   .catch(error => console.log("UNABLE TO CONNECT TO MSSQL: ", error));
+
+db.connect(options, function (err) {
+  if (err) {
+    console.log('UNABLE TO CONNECT TO MYSQL: ', err);
+    process.exit(1);
+  }
+  else {
+    console.log('MYSQL CONNECTION POOL CREATED.');
+  }
+});
+
+//MySQL session store for cookies
+const mySQLSessionStore = new MySQLStore(options);
 
 // Configures express to use sessions.  This places an encrypted identifier
 // on the users cookie.  When a user makes a request, this middleware examines
@@ -36,7 +58,7 @@ app.use(session({
   resave: true,
   saveUninitialized: true,
   secret: 'aaabbbccc',
-  store: new MSSQLStore(options)
+  store: mySQLSessionStore
 }));
 
 // Passport is wired into express as a middleware. When a request comes in,

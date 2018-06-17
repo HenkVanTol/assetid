@@ -1,18 +1,12 @@
-const mssql = require('mssql');
+const mysql = require('mysql');
 
 var state = {
     pool: null
 };
 
-function connect(options) {
-    return new Promise(function (resolve, reject) {
-        mssql.connect(options)
-            .then(pool => {
-                state.pool = pool;
-                resolve(pool);
-            })
-            .catch(error => reject(error));
-    });
+function connect(options, done) {
+    state.pool = mysql.createPool(options);
+    done();
 }
 
 function get() {

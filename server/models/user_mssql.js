@@ -1,37 +1,47 @@
 const bcrypt = require('bcrypt-nodejs');
 const crypto = require('crypto');
 const db = require('../db');
+const sql = require('mssql');
 
 function findById(id) {
     return new Promise(function (resolve, reject) {
-        db.get().query('select * from user where id = ?', id, function (err, rows) {
+        db.get().request()
+        .input("id", sql.Int, id)
+        .query("select * from dbo.[user] where id = @id", function (err, result) {
             if (err) return reject(err);
-            resolve(rows[0]);
+            resolve(result.recordset[0]);
         });
     });
 }
 
 function findByEmail(email) {
     return new Promise(function (resolve, reject) {
-        db.get().query('select * from user where email = ?', email, function (err, rows) {
-            if (err) return reject(err);
-            resolve(rows[0]);
-        });
+        db.get().request()
+        .input("email", sql.VarChar(255), email)
+        .query("select * from dbo.[user] where email = @email")
+            .then(result => {
+                resolve(result.recordset[0]);
+            })
+            .catch(error => {
+                reject(error);
+            });
     });
 }
 
 function insert(user, done) {
-    console.log("salt & hash password");
     bcrypt.genSalt(10, (err, salt) => {
         if (err) { return next(err); }
         bcrypt.hash(user.password, salt, null, (err, hash) => {
             if (err) { return next(err); }
             user.password = hash;
             let values = [user.email, user.password];
-            db.get().query("insert into user (email, password) values (?)", [values], function (err, result) {
+            db.get().request()
+            .input("email", sql.VarChar(255), user.email)
+            .input("password", sql.VarChar(255), user.password)
+            .query("insert into dbo.[user] (email, password) values (@email, @password);select scope_identity() as insertedId;", function (err, result) {
                 if (err) return done(err);
                 done(null, {
-                    id: result.insertId,
+                    id: result.recordset[0].insertedId,
                     email: user.email,
                     password: user.password
                 });
@@ -54,11 +64,11 @@ function create(user) {
 // procedure that modifies the password - the plain text password cannot be
 // derived from the salted + hashed version. See 'comparePassword' to understand
 // how this is used.
-
-//Fix queries
 function update(user) {
-    let sql = "select * from user where id = ?" + user.id;
-    let existing = db.get().query(sql, function (err, result) {
+    let sql = "select * from user where id = @id";
+    let existing = db.get()
+    .input("id", sql.Int, user.id)
+    .request().query(sql, function (err, result) {
         if (err) throw err;
         //check if password has changed - salt and hash if it did
         if (result) {
@@ -71,8 +81,12 @@ function update(user) {
                     });
                 });
             }
-            let updateSql = "update user set email = '" + user.email + "', password = '" + user.password + "' where id = " + user.id;
-            db.get().query(sql, function (err, result) {
+            let updateSql = "update user set email = @email, password = @password where id = @id";
+            db.get().request()
+            .input("email", sql.VarChar(255), user.email)
+            .input("password", sql.VarChar(255), user.password)
+            .input("id", sql.Int, user.id)
+            .query(sql, function (err, result) {
                 if (err) throw err;
                 if (result) {
                     console.log(result.affectedRows + " user record(s) updated");
