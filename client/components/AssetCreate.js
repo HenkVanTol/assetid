@@ -30,14 +30,14 @@ class AssetCreate extends Component {
         console.log("componentDidMount");
         this.props.client.query({
             query: findLookups,
-            // options: {
-            //     fetchPolicy: 'network-only'
-            // }
+            options: {
+                fetchPolicy: 'network-only'
+            }
         }).then((result) => {
             let lookups = result.data.AssetLookups;
-            if (result.data.AssetLookups) {
-                console.log("LOOKUPS: ", result.data.AssetLookups);
-                this.mapState(result.data.AssetLookups);
+            if (lookups) {
+                console.log("LOOKUPS: ", lookups);
+                this.mapState(lookups);
             }
         });
         this.setState(prevState => ({
@@ -45,7 +45,8 @@ class AssetCreate extends Component {
             StatusID: prevState.StatusID,
             ContractID: prevState.ContractID,
             DateRaised: prevState.DateRaised,
-            Value: prevState.Value
+            Value: prevState.Value,
+            serial: prevState.serial
         }));
     }
     componentWillUnmount() {
@@ -57,7 +58,7 @@ class AssetCreate extends Component {
         console.log("lookups in mapstate: ", lookups);
         this.setState({
             //DateRaised: moment(), errors: [], InvoiceStatuses: lookups.InvoiceStatuses, Contracts: lookups.Contracts
-            hierarchyTypes: lookups.HierarchyTypes, 
+            hierarchyTypes: lookups.HierarchyTypes,
             assetClasses: lookups.AssetClasses
         });
     }
@@ -117,6 +118,16 @@ class AssetCreate extends Component {
             );
         }
     }
+    renderAssetClasses() {
+        if (!this.props.data.loading) {
+            console.log("assetClasses in render(): ", this.state.assetClasses);
+            return (
+                this.state.assetClasses.map(assetClass => {
+                    return <Option key={assetClass.classid} value={assetClass.classid}>{assetClass.description}</Option>;
+                })
+            );
+        }
+    }
     render() {
         if (this.props.data.loading) {
             return (
@@ -158,13 +169,31 @@ class AssetCreate extends Component {
                         </Row> */}
                         <Row>
                             <Col {...colLayout}>
-                                <FormItem label="Contract" {...formItemLayout}>
-                                    <Select value={this.state.hierarchyTypeId} onChange={(value) => this.setState({ hierarchyTypeId: value })} >
-                                        {this.renderHierarchyTypes()}
-                                    </Select>
+                                <FormItem label="Hierarchy Type" {...formItemLayout}>
+                                    {
+                                        getFieldDecorator('hierarchyTypeId', {
+                                            initialValue: this.state.InvoiceNumber,
+                                            valuePropName: 'value',
+                                            rules: [{
+                                                required: true,
+                                                message: 'Hierarchy Type is required',
+                                            }],
+                                        })(
+                                            <Select onChange={(value) => this.setState({ hierarchyTypeId: value })} >
+                                                {this.renderHierarchyTypes()}
+                                            </Select>
+                                        )
+                                    }
                                 </FormItem>
                             </Col>
                             <Col {...colLayout}>
+                                <FormItem label="Class" {...formItemLayout}>
+                                    <Select value={this.state.assetClassId} onChange={(value) => this.setState({ assetClassId: value })} >
+                                        {this.renderAssetClasses()}
+                                    </Select>
+                                </FormItem>
+                            </Col>
+                            {/* <Col {...colLayout}>
                                 <FormItem label="Invoice Number" {...formItemLayout}>
                                     {
                                         this.props.params.id > 0 ?
@@ -181,35 +210,153 @@ class AssetCreate extends Component {
                                             )
                                     }
                                 </FormItem>
+                            </Col> */}
+                        </Row>
+                        <Row>
+                            <Col {...colLayout}>
+                                <FormItem label="Name" {...formItemLayout}>
+                                    {
+                                        getFieldDecorator('name', {
+                                            initialValue: this.state.name,
+                                            valuePropName: 'value',
+                                            rules: [{
+                                                required: true,
+                                                message: 'Name is required',
+                                            }],
+                                        })(
+                                            <Input onChange={e => this.setState({ name: e.target.value })} />
+                                        )
+                                    }
+                                </FormItem>
+                            </Col>
+                            <Col {...colLayout}>
+                                <FormItem label="Description" {...formItemLayout}>
+                                    {
+                                        <Input onChange={e => this.setState({ description: e.target.value })} />
+                                    }
+                                </FormItem>
                             </Col>
                         </Row>
                         <Row>
                             <Col {...colLayout}>
-                                <FormItem label="Status" {...formItemLayout}>
-                                    <Select value={this.state.StatusID} onChange={(value) => this.setState({ StatusID: value })} >
-                                        {/* {this.renderInvoiceStatuses()} */}
-                                    </Select>
+                                <FormItem label="Serial" {...formItemLayout}>
+                                    {
+                                        getFieldDecorator('serial', {
+                                            initialValue: this.state.serial,
+                                            valuePropName: 'value',
+                                            rules: [{
+                                                required: true,
+                                                message: 'Serial is required',
+                                            }],
+                                        })(
+                                            <Input onChange={e => this.setState({ serial: e.target.value })} />
+                                        )
+                                    }
                                 </FormItem>
                             </Col>
                             <Col {...colLayout}>
-                                <FormItem label="Value" {...formItemLayout}>
-                                    {getFieldDecorator('value', {
-                                        initialValue: this.state.Value,
+                                <FormItem label="Registration" {...formItemLayout}>
+                                    {
+                                        getFieldDecorator('Registration', {
+                                            initialValue: this.state.registration,
+                                            valuePropName: 'value',
+                                            rules: [{
+                                                required: true,
+                                                message: 'Registration is required',
+                                            }],
+                                        })(
+                                            <Input onChange={e => this.setState({ registration: e.target.value })} />
+                                        )
+                                    }
+                                </FormItem>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col {...colLayout}>
+                                <FormItem label="Acquisition Date" {...formItemLayout}>
+                                    {
+                                        getFieldDecorator('acquisitionDate', {
+                                            initialValue: this.state.acquisitionDate,
+                                            valuePropName: 'value',
+                                            rules: [{
+                                                required: true,
+                                                message: 'Acquisition Date is required',
+                                            }],
+                                        })(
+                                            <DatePicker onChange={(date, dateString) => { this.setState({ acquisitionDate: date }) }} />
+                                        )
+                                    }
+                                </FormItem>
+                            </Col>
+                            <Col {...colLayout}>
+                                <FormItem label="Service Date" {...formItemLayout}>
+                                    {
+                                        getFieldDecorator('serviceDate', {
+                                            initialValue: this.state.serviceDate,
+                                            valuePropName: 'value',
+                                            rules: [{
+                                                required: true,
+                                                message: 'Service Date is required',
+                                            }],
+                                        })(
+                                            <DatePicker onChange={(date, dateString) => { this.setState({ serviceDate: date }) }} />
+                                        )
+                                    }
+                                </FormItem>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col {...colLayout}>
+                                <FormItem label="Retirement Date" {...formItemLayout}>
+                                    {
+                                        getFieldDecorator('retirementDate', {
+                                            initialValue: this.state.retirementDate,
+                                            valuePropName: 'value',
+                                            rules: [{
+                                                required: true,
+                                                message: 'Retirement Date is required',
+                                            }],
+                                        })(
+                                            <DatePicker onChange={(date, dateString) => { this.setState({ retirementDate: date }) }} />
+                                        )
+                                    }
+                                </FormItem>
+                            </Col>
+                            <Col {...colLayout}>
+                                <FormItem label="Service Date" {...formItemLayout}>
+                                    {
+                                        getFieldDecorator('serviceDate', {
+                                            initialValue: this.state.serviceDate,
+                                            valuePropName: 'value',
+                                            rules: [{
+                                                required: true,
+                                                message: 'Service Date is required',
+                                            }],
+                                        })(
+                                            <DatePicker onChange={(date, dateString) => { this.setState({ serviceDate: date }) }} />
+                                        )
+                                    }
+                                </FormItem>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col {...colLayout}>
+                                <FormItem label="Purchase Price" {...formItemLayout}>
+                                    {getFieldDecorator('purchasePrice', {
+                                        initialValue: this.state.purchasePrice,
                                         valuePropName: 'value',
                                         rules: [{
                                             required: true,
-                                            message: 'Value is required',
+                                            message: 'Purchase Price is required',
                                         }],
                                     })(
-                                        <Input onChange={e => this.setState({ Value: e.target.value })} type="number" />
+                                        <Input onChange={e => this.setState({ purchasePrice: e.target.value })} type="number" />
                                     )}
                                 </FormItem>
                             </Col>
-                        </Row>
-                        <Row>
                             <Col {...colLayout}>
-                                <FormItem label="Date Raised" {...formItemLayout}>
-                                    <DatePicker value={this.state.DateRaised} onChange={(date, dateString) => { this.setState({ DateRaised: date }) }} />
+                                <FormItem label="Purchase Order" {...formItemLayout}>
+                                    <Input value={this.state.purchaseOrderNumber} onChange={e => this.setState({ purchaseOrderNumber: e.target.value })} />
                                 </FormItem>
                             </Col>
                         </Row>
