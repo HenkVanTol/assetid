@@ -9,7 +9,7 @@ const {
 const AssetClassType = new GraphQLObjectType({
     name: 'AssetClassType',
     fields: {
-        id: { type: GraphQLInt },
+        classid: { type: GraphQLInt },
         description: { type: GraphQLString }
     }
 });

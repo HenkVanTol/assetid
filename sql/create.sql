@@ -31,7 +31,7 @@ create table hierarchyType
 
 create table assetClass
 (
-	id int not null primary key, 
+	classid int not null primary key, 
     description varchar(255)
 );
 

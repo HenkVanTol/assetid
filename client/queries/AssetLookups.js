@@ -7,7 +7,7 @@ export default gql`query {
       description
     }
     AssetClasses {
-      id
+      classid
       description
     }
   }
