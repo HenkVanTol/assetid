@@ -6,6 +6,7 @@ const AssetMasterType = require('./asset_master_type');
 const InvoiceStatusesType = require('./invoiceStatuses_type');
 const ContractsType = require('./contracts_type');
 const InvoiceLookupType = require('./invoiceLookup_type');
+const AssetLookupType = require('./assetLookup_type');
 const HierarchyTypeType = require('./hierarchyType_type');
 const InvoiceService = require('../../services/invoice');
 const LookupService = require('../../services/lookup');
@@ -64,6 +65,12 @@ const RootQueryType = new GraphQLObjectType({
     },
     InvoiceLookups: {
       type: InvoiceLookupType,
+      resolve(parentValue, args) {
+        return [];
+      }
+    },
+    AssetLookups: {
+      type: AssetLookupType,
       resolve(parentValue, args) {
         return [];
       }

@@ -1,14 +1,34 @@
 const db = require('../db');
 
+function hierarchyTypes() {
+    return new Promise(function (resolve, reject) {
+       db.get().query('select * from hierarchyType', function (err, rows) {
+           if (err) {
+               return reject(err);
+           }
+           resolve(rows);
+       });
+    });
+}
+
+function assetClasses() {
+    return new Promise(function (resolve, reject) {
+       db.get().query('select * from assetClass', function (err, rows) {
+           if (err) {
+               return reject(err);
+           }
+           resolve(rows);
+       });
+    });
+}
+
 function find(name, description) {
     console.log("description", description);
     return new Promise(function (resolve, reject) {
         db.get().query('select * from assetMaster where description = ?', description, function (err, rows) {
             if (err) {
-                console.log("err", err);
                 return reject(err);
             }
-            console.log("rows: ", rows);
             resolve(rows);
         });
     });
@@ -67,4 +87,4 @@ function update(assetMaster) {
     });
 }
 
-module.exports = { find, create, findById, update };
+module.exports = {hierarchyTypes, assetClasses, find, create, findById, update };

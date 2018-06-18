@@ -7,7 +7,6 @@ function getAll() {
                 resolve(results);
             })
             .catch(err => {
-                console.log("lookupservice error: ", err);
                 reject(err);
             });
     });

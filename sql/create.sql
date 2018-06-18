@@ -29,7 +29,22 @@ create table hierarchyType
     description varchar(255)
 );
 
+create table assetClass
+(
+	id int not null primary key, 
+    description varchar(255)
+);
+
 insert into hierarchyType
 select 1, 'Master'
 union all 
 select 2, 'Component';
+
+insert into assetClass
+select 1, 'TestClass1'
+union all 
+select 2, 'TestClass2'
+union all 
+select 3, 'TestClass3';
+
+select * from assetmaster

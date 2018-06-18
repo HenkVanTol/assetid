@@ -7,7 +7,8 @@ const Option = Select.Option;
 
 import create from '../mutations/CreateAssetMaster';
 import findById from '../queries/InvoiceByID';
-import findLookups from '../queries/InvoiceLookups';
+//import findLookups from '../queries/InvoiceLookups';
+import findLookups from '../queries/AssetLookups';
 import update from '../mutations/UpdateInvoice';
 import hierarchyTypeQuery from '../queries/HierarchyType';
 
@@ -17,7 +18,7 @@ import '../../node_modules/toastr/build/toastr.css';
 let state = {
     hierarchyTypeId: null, masterId: null, classId: null, name: null,
     description: null, serial: null, registration: null, acquisitionDate: moment(), retirementDate: moment(), purchasePrice: null,
-    purchaseOrderNumber: null, creatorId: null, hierarchyTypes: [], hierarchyTypeId: null, errors: [], edit: false
+    purchaseOrderNumber: null, creatorId: null, hierarchyTypes: [], assetClasses: [], hierarchyTypeId: null, errors: [], edit: false
 };
 
 class AssetCreate extends Component {
@@ -28,16 +29,15 @@ class AssetCreate extends Component {
     componentDidMount() {
         console.log("componentDidMount");
         this.props.client.query({
-            query: hierarchyTypeQuery,
+            query: findLookups,
             // options: {
             //     fetchPolicy: 'network-only'
             // }
         }).then((result) => {
-            console.log("hierarchy result", result.data);
-            let lookups = result.data.InvoiceLookups;
-            if (lookups) {
-                console.log("LOOKUPS: ", lookups);
-                this.mapState(lookups);
+            let lookups = result.data.AssetLookups;
+            if (result.data.AssetLookups) {
+                console.log("LOOKUPS: ", result.data.AssetLookups);
+                this.mapState(result.data.AssetLookups);
             }
         });
         this.setState(prevState => ({
@@ -54,9 +54,11 @@ class AssetCreate extends Component {
         state = this.state;
     }
     mapState(lookups) {
+        console.log("lookups in mapstate: ", lookups);
         this.setState({
             //DateRaised: moment(), errors: [], InvoiceStatuses: lookups.InvoiceStatuses, Contracts: lookups.Contracts
-            InvoiceStatuses: lookups.InvoiceStatuses, Contracts: lookups.Contracts
+            hierarchyTypes: lookups.HierarchyTypes, 
+            assetClasses: lookups.AssetClasses
         });
     }
     onSubmit(event) {
@@ -105,20 +107,12 @@ class AssetCreate extends Component {
             }
         });
     }
-    renderInvoiceStatuses() {
+    renderHierarchyTypes() {
         if (!this.props.data.loading) {
+            console.log("hierarchyTypes in render(): ", this.state.hierarchyTypes);
             return (
-                this.state.InvoiceStatuses.map(status => {
-                    return <Option key={status.InvoiceStatusID} value={status.InvoiceStatusID}>{status.Ref}</Option>;
-                })
-            );
-        }
-    }
-    renderContracts() {
-        if (!this.props.data.loading) {
-            return (
-                this.state.Contracts.map(contract => {
-                    return <Option key={contract.ContractID} value={contract.ContractID}>{contract.Ref}</Option>;
+                this.state.hierarchyTypes.map(hierarchyType => {
+                    return <Option key={hierarchyType.id} value={hierarchyType.id}>{hierarchyType.description}</Option>;
                 })
             );
         }
@@ -164,6 +158,13 @@ class AssetCreate extends Component {
                         </Row> */}
                         <Row>
                             <Col {...colLayout}>
+                                <FormItem label="Contract" {...formItemLayout}>
+                                    <Select value={this.state.hierarchyTypeId} onChange={(value) => this.setState({ hierarchyTypeId: value })} >
+                                        {this.renderHierarchyTypes()}
+                                    </Select>
+                                </FormItem>
+                            </Col>
+                            <Col {...colLayout}>
                                 <FormItem label="Invoice Number" {...formItemLayout}>
                                     {
                                         this.props.params.id > 0 ?
@@ -181,19 +182,12 @@ class AssetCreate extends Component {
                                     }
                                 </FormItem>
                             </Col>
-                            <Col {...colLayout}>
-                                <FormItem label="Contract" {...formItemLayout}>
-                                    <Select value={this.state.ContractID} onChange={(value) => this.setState({ ContractID: value })} >
-                                        {this.renderContracts()}
-                                    </Select>
-                                </FormItem>
-                            </Col>
                         </Row>
                         <Row>
                             <Col {...colLayout}>
                                 <FormItem label="Status" {...formItemLayout}>
                                     <Select value={this.state.StatusID} onChange={(value) => this.setState({ StatusID: value })} >
-                                        {this.renderInvoiceStatuses()}
+                                        {/* {this.renderInvoiceStatuses()} */}
                                     </Select>
                                 </FormItem>
                             </Col>
