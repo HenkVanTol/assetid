@@ -16,9 +16,24 @@ import toastr from 'toastr';
 import '../../node_modules/toastr/build/toastr.css';
 
 let state = {
-    hierarchyTypeId: null, masterId: null, classId: null, name: null,
-    description: null, serial: null, registration: null, acquisitionDate: moment(), retirementDate: moment(), purchasePrice: null,
-    purchaseOrderNumber: null, creatorId: null, hierarchyTypes: [], assetClasses: [], hierarchyTypeId: null, errors: [], edit: false
+    hierarchyTypeId: null,
+    masterId: null,
+    classId: null,
+    name: null,
+    description: null,
+    serial: null,
+    registration: null,
+    acquisitionDate: moment(),
+    retirementDate: moment(),
+    serviceDate: null,
+    purchasePrice: null,
+    purchaseOrderNumber: null,
+    creatorId: null,
+    hierarchyTypes: [],
+    assetClasses: [],
+    hierarchyTypeId: null,
+    errors: [],
+    edit: false
 };
 
 class AssetCreate extends Component {
@@ -27,26 +42,35 @@ class AssetCreate extends Component {
         this.state = state;
     }
     componentDidMount() {
-        console.log("componentDidMount");
         this.props.client.query({
             query: findLookups,
-            options: {
-                fetchPolicy: 'network-only'
-            }
+            // options: {
+            //     fetchPolicy: 'network-only'
+            // }
         }).then((result) => {
             let lookups = result.data.AssetLookups;
             if (lookups) {
-                console.log("LOOKUPS: ", lookups);
                 this.mapState(lookups);
             }
         });
         this.setState(prevState => ({
-            InvoiceNumber: prevState.InvoiceNumber,
-            StatusID: prevState.StatusID,
-            ContractID: prevState.ContractID,
-            DateRaised: prevState.DateRaised,
-            Value: prevState.Value,
-            serial: prevState.serial
+            hierarchyTypeId: prevState.hierarchyTypeId,
+            masterId: prevState.masterId,
+            classId: prevState.classId,
+            name: prevState.name,
+            description: prevState.description,
+            serial: prevState.serial,
+            registration: prevState.registration,
+            acquisitionDate: prevState.acquisitionDate,
+            retirementDate: prevState.retirementDate,
+            serviceDate: prevState.serviceDate,
+            purchasePrice: prevState.purchasePrice,
+            purchaseOrderNumber: prevState.purchaseOrderNumber,
+            hierarchyTypeId: prevState.hierarchyTypeId,
+            creatorId: prevState.creatorId,
+            // hierarchyTypes: prevState.serial, 
+            // assetClasses: prevState.serial, 
+            errors: []
         }));
     }
     componentWillUnmount() {
@@ -67,7 +91,22 @@ class AssetCreate extends Component {
         this.props.form.validateFields((err, values) => {
             if (!err) {
 
-                const { InvoiceID, InvoiceNumber, ContractID, StatusID, DateRaised, Value } = this.state;
+                const {
+                    hierarchyTypeId,
+                    masterId,
+                    classId,
+                    name,
+                    description,
+                    serial,
+                    registration,
+                    acquisitionDate,
+                    retirementDate,
+                    serviceDate,
+                    purchasePrice,
+                    purchaseOrderNumber,
+                    creatorId
+                } = this.state;
+
                 if (this.state.edit == true) {
                     this.props.client.mutate({
                         mutation: update,
@@ -92,9 +131,23 @@ class AssetCreate extends Component {
                     });
                 }
                 else {
+
+                    // $name:String, $description:String, $serial:String, 
+                    // $registration:String, $acquisitionDate: Date, $retirementDate: Date, $hierarchyTypeId: Int) {
+                    // createAssetMaster(name:$name, description:$description, serial:$serial, registration:$registration, 
+                    //   acquisitionDate: $acquisitionDate, retirementDate: $retirementDate, hierarchyTypeId: $hierarchyTypeId
+
                     this.props.client.mutate({
                         mutation: create,
-                        variables: { InvoiceNumber, ContractID, StatusID, DateRaised, Value }
+                        variables: { 
+                            name, 
+                            description, 
+                            serial, 
+                            registration, 
+                            acquisitionDate, 
+                            retirementDate, 
+                            hierarchyTypeId
+                         }
                     }).then(() => {
                         toastr.success('Invoice Created', 'Create Invoice', { timeOut: 1000 });
                     }).catch(res => {
@@ -323,24 +376,6 @@ class AssetCreate extends Component {
                                 </FormItem>
                             </Col>
                             <Col {...colLayout}>
-                                <FormItem label="Service Date" {...formItemLayout}>
-                                    {
-                                        getFieldDecorator('serviceDate', {
-                                            initialValue: this.state.serviceDate,
-                                            valuePropName: 'value',
-                                            rules: [{
-                                                required: true,
-                                                message: 'Service Date is required',
-                                            }],
-                                        })(
-                                            <DatePicker onChange={(date, dateString) => { this.setState({ serviceDate: date }) }} />
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col {...colLayout}>
                                 <FormItem label="Purchase Price" {...formItemLayout}>
                                     {getFieldDecorator('purchasePrice', {
                                         initialValue: this.state.purchasePrice,
@@ -354,6 +389,8 @@ class AssetCreate extends Component {
                                     )}
                                 </FormItem>
                             </Col>
+                        </Row>
+                        <Row>
                             <Col {...colLayout}>
                                 <FormItem label="Purchase Order" {...formItemLayout}>
                                     <Input value={this.state.purchaseOrderNumber} onChange={e => this.setState({ purchaseOrderNumber: e.target.value })} />

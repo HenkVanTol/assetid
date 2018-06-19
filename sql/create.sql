@@ -23,6 +23,23 @@ create table assetMaster
     creatorId int 
 );
 
+create table assettracking
+(
+	trackingid int auto_increment not null primary key,
+	assetid int not null,
+    eventtypeid int not null, 
+    issuerid int not null, 
+    userid int not null, 
+    locationid int, 
+    responsibleperson int
+);
+
+create table eventtype
+(
+	eventtypeid int auto_increment not null primary key, 
+    description varchar(255)
+);
+
 create table hierarchyType
 (
 	id int not null primary key, 
@@ -47,4 +64,13 @@ select 2, 'TestClass2'
 union all 
 select 3, 'TestClass3';
 
-select * from assetmaster
+insert into eventtype
+select 1, 'Sell'
+union all 
+select 2, 'Scrap'
+union all
+select 3, 'Transfer';
+
+select * from assetmaster order by id desc;
+
+select * from user;

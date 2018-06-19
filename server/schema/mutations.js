@@ -9,8 +9,10 @@ const {
 
 const UserType = require('./types/user_type');
 const InvoiceSearchType = require('./types/invoiceSearch_type');
+const AssetMasterType = require('./types/asset_master_type');
 const AuthService = require('../services/auth');
 const InvoiceService = require('../services/invoice');
+const AssetMasterService = require('../services/assetMaster');
 const GraphQLDate = require('graphql-date');
 
 const mutation = new GraphQLObjectType({
@@ -69,6 +71,37 @@ const mutation = new GraphQLObjectType({
             },
             resolve(parentValue, { InvoiceID, InvoiceNumber, ContractID, StatusID, DateRaised, Value }) {
                 return InvoiceService.UpdateInvoice({ InvoiceID, InvoiceNumber, ContractID, StatusID, DateRaised, Value });
+            }
+        },
+        createAssetMaster: {
+            type: AssetMasterType,
+            args: {
+                name: { type: GraphQLString },
+                description: { type: GraphQLString },
+                serial: { type: GraphQLString },
+                registration: { type: GraphQLString },
+                acquisitionDate: { type: GraphQLDate },
+                retirementDate: { type: GraphQLDate },
+                hierarchyTypeId: { type: GraphQLInt }
+            },
+            resolve(parentValue, { name, description, serial, registration, acquisitionDate, retirementDate, hierarchyTypeId }) {
+                return AssetMasterService.create({ name, description, serial, registration, acquisitionDate, retirementDate, hierarchyTypeId });
+            }
+        },
+        updateAssetMaster: {
+            type: AssetMasterType,
+            args: {
+                id: { type: GraphQLInt },
+                name: { type: GraphQLString },
+                description: { type: GraphQLString },
+                serial: { type: GraphQLString },
+                registration: { type: GraphQLString },
+                acquisitionDate: { type: GraphQLDate },
+                retirementDate: { type: GraphQLDate },
+                hierarchyTypeId: { type: GraphQLInt }
+            },
+            resolve(parentValue, { id, name, description, serial, registration, acquisitionDate, retirementDate, hierarchyTypeId }) {
+                return AssetMasterService.update({ id, name, description, serial, registration, acquisitionDate, retirementDate, hierarchyTypeId });
             }
         }
     }
