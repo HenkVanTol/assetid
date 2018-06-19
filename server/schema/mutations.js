@@ -76,16 +76,53 @@ const mutation = new GraphQLObjectType({
         createAssetMaster: {
             type: AssetMasterType,
             args: {
+                hierarchyTypeId: { type: GraphQLInt },
+                masterId: { type: GraphQLInt },
+                classId: { type: GraphQLInt },
                 name: { type: GraphQLString },
                 description: { type: GraphQLString },
                 serial: { type: GraphQLString },
                 registration: { type: GraphQLString },
                 acquisitionDate: { type: GraphQLDate },
+                serviceDate: { type: GraphQLDate },
                 retirementDate: { type: GraphQLDate },
-                hierarchyTypeId: { type: GraphQLInt }
+                purchasePrice: { type: GraphQLFloat },
+                purchaseOrderNumber: { type: GraphQLString },
+                creatorId: { type: GraphQLInt }
             },
-            resolve(parentValue, { name, description, serial, registration, acquisitionDate, retirementDate, hierarchyTypeId }) {
-                return AssetMasterService.create({ name, description, serial, registration, acquisitionDate, retirementDate, hierarchyTypeId });
+            resolve(parentValue, 
+                { 
+                    hierarchyTypeId,
+                    masterId,
+                    classId,
+                    name, 
+                    description, 
+                    serial, 
+                    registration, 
+                    acquisitionDate, 
+                    serviceDate, 
+                    retirementDate, 
+                    purchasePrice,
+                    purchaseOrderNumber,
+                    creatorId
+                }) {
+                return AssetMasterService.create(
+                    { 
+                        hierarchyTypeId,
+                        masterId,
+                        classId,
+                        name, 
+                        description, 
+                        serial, 
+                        registration, 
+                        acquisitionDate, 
+                        serviceDate,  
+                        retirementDate, 
+                        purchasePrice,
+                        purchaseOrderNumber,
+                        creatorId
+                    }
+                );
             }
         },
         updateAssetMaster: {

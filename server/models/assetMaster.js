@@ -46,29 +46,55 @@ function findById(id) {
 function create(assetMaster) {
     return new Promise((resolve, reject) => {
         let values = [
-            assetMaster.name, 
-            assetMaster.description, 
+            assetMaster.hierarchyTypeId,
+            assetMaster.masterId,
+            assetMaster.classId, 
+            assetMaster.name,
+            assetMaster.description,
             assetMaster.serial,
-            assetMaster.registration, 
-            assetMaster.acquisitionDate, 
-            assetMaster.retirementDate, 
-            assetMaster.hierarchyTypeId
+            assetMaster.registration,
+            assetMaster.acquisitionDate,
+            assetMaster.serviceDate, 
+            assetMaster.retirementDate,
+            assetMaster.purchasePrice, 
+            assetMaster.purchaseOrderNumber,
+            assetMaster.creatorId
         ];
         console.log("values: ", values);
-        db.get().query("insert into assetMaster (name, description, serial, registration, acquisitionDate, retirementDate, hierarchyTypeId) values (?)", [values], function (err, result) {
+        db.get().query(`insert into assetMaster 
+                        (hierarchyTypeId, 
+                            masterId, 
+                            classId, 
+                            name, 
+                            description, 
+                            serial, 
+                            registration, 
+                            acquisitionDate, 
+                            serviceDate, 
+                            retirementDate, 
+                            purchasePrice,
+                            purchaseOrderNumber,
+                            creatorId) values (?)`
+        , [values], function (err, result) {
             if (err) {
+                console.log("error on asset create: ", err);
                 return reject(err);
             }
             resolve({
                 id: result.insertId,
+                hierarchyTypeId: assetMaster.hierarchyTypeId,
+                masterId: assetMaster.masterId,
+                classId: assetMaster.classId,
                 name: assetMaster.email,
                 description: assetMaster.password,
                 serial: assetMaster.serial,
                 registration: assetMaster.registration,
-                purchasePrice: assetMaster.purchasePrice,
                 acquisitionDate: assetMaster.acquisitionDate,
+                serviceDate: assetMaster.serviceDate,
                 retirementDate: assetMaster.retirementDate,
-                hierarchyTypeId: assetMaster.hierarchyTypeId
+                purchasePrice: assetMaster.purchasePrice,
+                purchaseOrderNumber: assetMaster.purchaseOrderNumber,
+                creatorId: assetMaster.creatorId
             });
         });
     });

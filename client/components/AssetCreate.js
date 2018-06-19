@@ -40,6 +40,8 @@ class AssetCreate extends Component {
     constructor(props) {
         super(props);
         this.state = state;
+        console.log("props in constructor: ", props);
+        console.log("user in constructor: ", props.data.user);
     }
     componentDidMount() {
         this.props.client.query({
@@ -140,13 +142,19 @@ class AssetCreate extends Component {
                     this.props.client.mutate({
                         mutation: create,
                         variables: { 
+                            hierarchyTypeId,
+                            masterId,
+                            classId,
                             name, 
                             description, 
                             serial, 
                             registration, 
                             acquisitionDate, 
+                            serviceDate,
                             retirementDate, 
-                            hierarchyTypeId
+                            purchasePrice,
+                            purchaseOrderNumber,
+                            creatorId
                          }
                     }).then(() => {
                         toastr.success('Invoice Created', 'Create Invoice', { timeOut: 1000 });
