@@ -249,7 +249,7 @@ class AssetCreate extends Component {
                             </Col>
                             <Col {...colLayout}>
                                 <FormItem label="Class" {...formItemLayout}>
-                                    <Select value={this.state.assetClassId} onChange={(value) => this.setState({ assetClassId: value })} >
+                                    <Select value={this.state.classId} onChange={(value) => this.setState({ classId: value })} >
                                         {this.renderAssetClasses()}
                                     </Select>
                                 </FormItem>
@@ -402,6 +402,11 @@ class AssetCreate extends Component {
                             <Col {...colLayout}>
                                 <FormItem label="Purchase Order" {...formItemLayout}>
                                     <Input value={this.state.purchaseOrderNumber} onChange={e => this.setState({ purchaseOrderNumber: e.target.value })} />
+                                </FormItem>
+                            </Col>
+                            <Col {...colLayout}>
+                                <FormItem label="Master" {...formItemLayout}>
+                                    <Input value={this.state.masterId} onChange={e => this.setState({ masterId: e.target.value })} />
                                 </FormItem>
                             </Col>
                         </Row>
