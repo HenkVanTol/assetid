@@ -11,6 +11,7 @@ import findById from '../queries/InvoiceByID';
 import findLookups from '../queries/AssetLookups';
 import update from '../mutations/UpdateInvoice';
 import hierarchyTypeQuery from '../queries/HierarchyType';
+import userQuery from '../queries/CurrentUser';
 
 import toastr from 'toastr';
 import '../../node_modules/toastr/build/toastr.css';
@@ -32,6 +33,7 @@ let state = {
     hierarchyTypes: [],
     assetClasses: [],
     hierarchyTypeId: null,
+    creatorId: null,
     errors: [],
     edit: false
 };
@@ -55,6 +57,15 @@ class AssetCreate extends Component {
                 this.mapState(lookups);
             }
         });
+        this.props.client.query({
+            query: userQuery,
+            // options: {
+            //     fetchPolicy: 'network-only'
+            // }
+        }).then((result) => {
+            console.log("user result: ", result);
+            this.setState({ creatorId: result.data.user.id });
+        });
         this.setState(prevState => ({
             hierarchyTypeId: prevState.hierarchyTypeId,
             masterId: prevState.masterId,
@@ -72,7 +83,7 @@ class AssetCreate extends Component {
             creatorId: prevState.creatorId,
             // hierarchyTypes: prevState.serial, 
             // assetClasses: prevState.serial, 
-            errors: []
+            errors: prevState.errors
         }));
     }
     componentWillUnmount() {
@@ -141,21 +152,21 @@ class AssetCreate extends Component {
 
                     this.props.client.mutate({
                         mutation: create,
-                        variables: { 
+                        variables: {
                             hierarchyTypeId,
                             masterId,
                             classId,
-                            name, 
-                            description, 
-                            serial, 
-                            registration, 
-                            acquisitionDate, 
+                            name,
+                            description,
+                            serial,
+                            registration,
+                            acquisitionDate,
                             serviceDate,
-                            retirementDate, 
+                            retirementDate,
                             purchasePrice,
                             purchaseOrderNumber,
                             creatorId
-                         }
+                        }
                     }).then(() => {
                         toastr.success('Invoice Created', 'Create Invoice', { timeOut: 1000 });
                     }).catch(res => {
