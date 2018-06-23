@@ -25,11 +25,11 @@ const app = express();
 
 //MySQL connection settings
 const options = {
-  host: 'localhost',
+  host: 'sql12.freemysqlhosting.net',
   port: 3306,
-  user: 'root',
-  password: 'Mechanics!',
-  database: 'assetid'
+  user: 'sql12244174',
+  password: 'b8cjIpVbix',
+  database: 'sql12244174'
 };
 
 // db.connect(options)
