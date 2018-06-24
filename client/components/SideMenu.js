@@ -38,12 +38,12 @@ class SideMenu extends Component {
                     <Menu.Item key="home">
                         <Link to="/">Home</Link>
                     </Menu.Item>
-                    <Menu.Item key="invoiceCreate">
+                    {/* <Menu.Item key="invoiceCreate">
                         <Link to="/invoiceCreate">Create</Link>
                     </Menu.Item>
                     <Menu.Item key="invoiceSearch">
                         <Link to="/invoiceSearch">Search</Link>
-                    </Menu.Item>
+                    </Menu.Item> */}
                     <Menu.Item key="assetSearch">
                         <Link to="/assetSearch">Search Assets</Link>
                     </Menu.Item>

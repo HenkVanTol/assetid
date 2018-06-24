@@ -24,12 +24,19 @@ const app = express();
 // };
 
 //MySQL connection settings
+// const options = {
+//   host: 'sql12.freemysqlhosting.net',
+//   port: 3306,
+//   user: 'sql12244174',
+//   password: 'b8cjIpVbix',
+//   database: 'sql12244174'
+// };
 const options = {
-  host: 'sql12.freemysqlhosting.net',
+  host: 'localhost',
   port: 3306,
-  user: 'sql12244174',
-  password: 'b8cjIpVbix',
-  database: 'sql12244174'
+  user: 'root',
+  password: 'Mechanics!',
+  database: 'assetid'
 };
 
 // db.connect(options)
@@ -83,22 +90,3 @@ const webpackConfig = require('../webpack.config.js');
 app.use(webpackMiddleware(webpack(webpackConfig)));
 
 module.exports = app;
-
-// var soap = require('soap');
-// var url = 'http://localhost:3881/EDIInterface.asmx?WSDL';
-
-// reqURL = soap.createClient(url, function(err, client){
-//     if(err) { 
-//         console.log(err);
-//         return;
-//     }
-
-//     client.UploadDataXML_raw("<xml>test</xml>", function(err, response){
-//             if(err) {
-//                 console.log("error: ", err);
-//                 return;
-//             }
-
-//             console.log("response: ", response);
-//     });
-// });

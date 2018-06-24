@@ -48,15 +48,15 @@ function create(assetMaster) {
         let values = [
             assetMaster.hierarchyTypeId,
             assetMaster.masterId,
-            assetMaster.classId, 
+            assetMaster.classId,
             assetMaster.name,
             assetMaster.description,
             assetMaster.serial,
             assetMaster.registration,
             assetMaster.acquisitionDate,
-            assetMaster.serviceDate, 
+            assetMaster.serviceDate,
             assetMaster.retirementDate,
-            assetMaster.purchasePrice, 
+            assetMaster.purchasePrice,
             assetMaster.purchaseOrderNumber,
             assetMaster.creatorId
         ];
@@ -75,50 +75,85 @@ function create(assetMaster) {
                             purchasePrice,
                             purchaseOrderNumber,
                             creatorId) values (?)`
-        , [values], function (err, result) {
-            if (err) {
-                console.log("error on asset create: ", err);
-                return reject(err);
-            }
-            resolve({
-                id: result.insertId,
-                hierarchyTypeId: assetMaster.hierarchyTypeId,
-                masterId: assetMaster.masterId,
-                classId: assetMaster.classId,
-                name: assetMaster.email,
-                description: assetMaster.password,
-                serial: assetMaster.serial,
-                registration: assetMaster.registration,
-                acquisitionDate: assetMaster.acquisitionDate,
-                serviceDate: assetMaster.serviceDate,
-                retirementDate: assetMaster.retirementDate,
-                purchasePrice: assetMaster.purchasePrice,
-                purchaseOrderNumber: assetMaster.purchaseOrderNumber,
-                creatorId: assetMaster.creatorId
+            , [values], function (err, result) {
+                if (err) {
+                    console.log("error on asset create: ", err);
+                    return reject(err);
+                }
+                resolve({
+                    id: result.insertId,
+                    hierarchyTypeId: assetMaster.hierarchyTypeId,
+                    masterId: assetMaster.masterId,
+                    classId: assetMaster.classId,
+                    name: assetMaster.email,
+                    description: assetMaster.password,
+                    serial: assetMaster.serial,
+                    registration: assetMaster.registration,
+                    acquisitionDate: assetMaster.acquisitionDate,
+                    serviceDate: assetMaster.serviceDate,
+                    retirementDate: assetMaster.retirementDate,
+                    purchasePrice: assetMaster.purchasePrice,
+                    purchaseOrderNumber: assetMaster.purchaseOrderNumber,
+                    creatorId: assetMaster.creatorId
+                });
             });
-        });
     });
 }
 
 function update(assetMaster) {
     return new Promise((resolve, reject) => {
-        let values = [assetMaster.name, assetMaster.description, assetMaster.serial,
-        assetMaster.registration, assetMaster.acquisitionDate, assetMaster.retirementDate, assetMaster.hierarchyTypeId, assetMaster.id];
+        let values = [
+            assetMaster.hierarchyTypeId,
+            assetMaster.masterId,
+            assetMaster.classId,
+            assetMaster.name,
+            assetMaster.description,
+            assetMaster.serial,
+            assetMaster.registration,
+            assetMaster.acquisitionDate,
+            assetMaster.serviceDate,
+            assetMaster.retirementDate,
+            assetMaster.purchasePrice,
+            assetMaster.purchaseOrderNumber,
+            assetMaster.creatorId,
+            assetMaster.id
+        ];
         console.log("values for update: ", values);
-        db.get().query("update assetMaster set name = ?, description = ?, serial = ?, registration = ?, acquisitionDate = ?, retirementDate = ?, hierarchyTypeId = ? where id = ?", values, function (err, result) {
-            if (err) reject(err);
-            resolve({
-                id: assetMaster.id,
-                name: assetMaster.email,
-                description: assetMaster.password,
-                serial: assetMaster.serial,
-                registration: assetMaster.registration,
-                purchasePrice: assetMaster.purchasePrice,
-                acquisitionDate: assetMaster.acquisitionDate,
-                retirementDate: assetMaster.retirementDate,
-                hierarchyTypeId: assetMaster.hierarchyTypeId
+        db.get().query(`update assetMaster 
+                        set hierarchyTypeId = ?, 
+                            masterId = ?, 
+                            classId = ?, 
+                            name = ?, 
+                            description = ?, 
+                            serial = ?, 
+                            registration = ?,
+                            acquisitionDate = ?,
+                            serviceDate = ?,
+                            retirementDate = ?,
+                            purchasePrice = ?,
+                            purchaseOrderNumber = ?,
+                            creatorId = ?
+                        where Id = ?`,
+            values, function (err, result) {
+                if (err) reject(err);
+                resolve({
+                    // hierarchyTypeId: assetMaster.hierarchyTypeId,
+                    // masterId: assetMaster.masterId,
+                    // classId: assetMaster.classId,
+                    // name: assetMaster.name, 
+                    // description: assetMaster.description,
+                    // serial: assetMaster.serial,
+                    // registration: assetMaster.registration, 
+                    // acquisitionDate: assetMaster.acquisitionDate,
+                    // serviceDate: assetMaster.serviceDate,
+                    // retirementDate: assetMaster.retirementDate, 
+                    // purchasePrice: assetMaster.purchasePrice,
+                    // purchaseOrderNumber: assetMaster.purchaseOrderNumber,
+                    // creatorId: assetMaster.creatorId,
+                    // id: assetMaster.id
+                    assetMaster
+                });
             });
-        });
     });
 }
 

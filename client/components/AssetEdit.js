@@ -4,9 +4,9 @@ import moment from 'moment';
 import { Form, Row, Col, Input, Button, DatePicker, Select, Label } from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
-import create from '../mutations/CreateAssetMaster';
+import update from '../mutations/UpdateAssetMaster';
 import findLookups from '../queries/AssetLookups';
-import hierarchyTypeQuery from '../queries/HierarchyType';
+import findById from '../queries/AssetMasterById';
 import userQuery from '../queries/CurrentUser';
 
 import toastr from 'toastr';
@@ -31,7 +31,8 @@ let state = {
     hierarchyTypeId: null,
     creatorId: null,
     errors: [],
-    edit: false
+    edit: false,
+    id: null
 };
 
 class AssetCreate extends Component {
@@ -40,14 +41,29 @@ class AssetCreate extends Component {
         this.state = state;
     }
     componentDidMount() {
-        console.log("state in did mount: ", this.state);
+        //edit existing
+        if (this.props.params.id) {
+            console.log("params id:", this.props.params.id);
+            this.props.client.query({
+                query: findById,
+                variables: { id: this.props.params.id },
+                options: {
+                    fetchPolicy: 'network-only'
+                }
+            }).then((result) => {
+                console.log("HERE: ", result);
+                let asset = result.data.assetMasterById;
+                if (asset) {
+                    this.mapAsset(asset);
+                }
+            });
+        }
         this.props.client.query({
             query: findLookups,
             // options: {
             //     fetchPolicy: 'network-only'
             // }
         }).then((result) => {
-            console.log("FINISHED LOOKUP QUERY");
             let lookups = result.data.AssetLookups;
             if (lookups) {
                 this.mapState(lookups);
@@ -79,22 +95,38 @@ class AssetCreate extends Component {
         }));
     }
     componentWillUnmount() {
-        console.log("componentWillUnmount");
         // Remember state for the next mount
         state = this.state;
     }
     mapState(lookups) {
-        console.log("lookups in mapstate: ", lookups);
         this.setState({
             hierarchyTypes: lookups.HierarchyTypes,
             assetClasses: lookups.AssetClasses
+        });
+    }
+    mapAsset(asset) {
+        console.log("asset in mapAsset: ", asset);
+        this.setState({
+            hierarchyTypeId: asset.hierarchyTypeId,
+            masterId: asset.masterId,
+            classId: asset.classId,
+            name: asset.name,
+            description: asset.description,
+            serial: asset.serial,
+            registration: asset.registration,
+            acquisitionDate: moment(asset.acquisitionDate),
+            retirementDate: moment(asset.retirementDate),
+            serviceDate: moment(asset.serviceDate),
+            purchasePrice: asset.purchasePrice,
+            purchaseOrderNumber: asset.purchaseOrderNumber,
+            creatorId: asset.creatorId,
+            id: asset.id
         });
     }
     onSubmit(event) {
         event.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
-
                 const {
                     hierarchyTypeId,
                     masterId,
@@ -108,57 +140,46 @@ class AssetCreate extends Component {
                     serviceDate,
                     purchasePrice,
                     purchaseOrderNumber,
-                    creatorId
+                    creatorId,
+                    id
                 } = this.state;
 
-                if (this.state.edit == true) {
-                    this.props.client.mutate({
-                        mutation: update,
-                        variables: { InvoiceID, InvoiceNumber, ContractID, StatusID, DateRaised, Value }
-                    }).then(() => {
-                        this.props.client.query({
-                            query: findById,
-                            variables: { InvoiceID: this.props.params.id },
-                            options: {
-                                fetchPolicy: 'network-only'
-                            }
-                        }).then((result) => {
-                            let invoice = result.data.InvoiceByID[0];
-                            if (invoice) {
-                                this.mapState(invoice);
-                            }
-                            toastr.success('Invoice Updated', 'Edit Invoice', { timeOut: 1000 });
-                        });
-                    }).catch(res => {
-                        const errors = res.graphQLErrors.map(error => error.message);
-                        this.setState({ errors });
-                    });
-                }
-                else {
-                    this.props.client.mutate({
-                        mutation: create,
-                        variables: {
-                            hierarchyTypeId,
-                            masterId,
-                            classId,
-                            name,
-                            description,
-                            serial,
-                            registration,
-                            acquisitionDate,
-                            serviceDate,
-                            retirementDate,
-                            purchasePrice,
-                            purchaseOrderNumber,
-                            creatorId
+                this.props.client.mutate({
+                    mutation: update,
+                    variables: {
+                        hierarchyTypeId,
+                        masterId,
+                        classId,
+                        name,
+                        description,
+                        serial,
+                        registration,
+                        acquisitionDate,
+                        retirementDate,
+                        serviceDate,
+                        purchasePrice,
+                        purchaseOrderNumber,
+                        creatorId,
+                        id
+                    }
+                }).then(() => {
+                    this.props.client.query({
+                        query: findById,
+                        variables: { id },
+                        options: {
+                            fetchPolicy: 'network-only'
                         }
-                    }).then(() => {
-                        toastr.success('Invoice Created', 'Create Invoice', { timeOut: 1000 });
-                    }).catch(res => {
-                        const errors = res.graphQLErrors.map(error => error.message);
-                        this.setState({ errors });
+                    }).then((result) => {
+                        let asset = result.data.assetMasterById;
+                        if (asset) {
+                            this.mapAsset(asset);
+                        }
+                        toastr.success('Asset Updated', 'Edit Asset', { timeOut: 1000 });
                     });
-                }
+                }).catch(res => {
+                    const errors = res.graphQLErrors.map(error => error.message);
+                    this.setState({ errors });
+                });
             }
             else {
                 console.log("Validation errors");
@@ -167,7 +188,6 @@ class AssetCreate extends Component {
     }
     renderHierarchyTypes() {
         if (!this.props.data.loading) {
-            console.log("hierarchyTypes in render(): ", this.state.hierarchyTypes);
             return (
                 this.state.hierarchyTypes.map(hierarchyType => {
                     return <Option key={hierarchyType.id} value={hierarchyType.id}>{hierarchyType.description}</Option>;
@@ -177,7 +197,6 @@ class AssetCreate extends Component {
     }
     renderAssetClasses() {
         if (!this.props.data.loading) {
-            console.log("assetClasses in render(): ", this.state.assetClasses);
             return (
                 this.state.assetClasses.map(assetClass => {
                     return <Option key={assetClass.classid} value={assetClass.classid}>{assetClass.description}</Option>;
@@ -217,13 +236,8 @@ class AssetCreate extends Component {
             };
             return (
                 <div>
-                    <h2>Create Asset</h2>
+                    <h2>Edit Asset</h2>
                     <Form onSubmit={this.onSubmit.bind(this)} className="ant-advanced-search-form">
-                        {/* <Row>
-                            <FormItemLabel value="Contract: " />
-                            <FormItemCombo value={this.state.ContractID} onChange={(value) => this.setState({ ContractID: value })}
-                                renderOptions={this.renderContracts.bind(this)} />
-                        </Row> */}
                         <Row>
                             <Col {...colLayout}>
                                 <FormItem label="Hierarchy Type" {...formItemLayout}>

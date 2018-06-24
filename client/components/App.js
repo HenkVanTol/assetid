@@ -17,9 +17,7 @@ const App = (props) => {
                     <HeaderMenu />
                 </Header>
                 <Layout>
-                    {/* <Sider width={200} style={{ background: '#fff' }}> */}
                     <SideMenu />
-                    {/* </Sider> */}
                     <Layout style={{ padding: '0 24px' }}>
                         <Content style={{ background: '#fff', padding: '24px', margin: 0, minHeight: 500 }}>
                             {props.children}

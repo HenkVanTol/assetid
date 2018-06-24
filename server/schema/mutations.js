@@ -8,10 +8,8 @@ const {
 } = graphql;
 
 const UserType = require('./types/user_type');
-const InvoiceSearchType = require('./types/invoiceSearch_type');
 const AssetMasterType = require('./types/asset_master_type');
 const AuthService = require('../services/auth');
-const InvoiceService = require('../services/invoice');
 const AssetMasterService = require('../services/assetMaster');
 const GraphQLDate = require('graphql-date');
 
@@ -44,33 +42,6 @@ const mutation = new GraphQLObjectType({
             },
             resolve(parentValue, { email, password }, req) {
                 return AuthService.login({ email, password, req });
-            }
-        },
-        CreateInvoice: {
-            type: InvoiceSearchType,
-            args: {
-                InvoiceNumber: { type: GraphQLString },
-                ContractID: { type: GraphQLInt },
-                StatusID: { type: GraphQLInt },
-                DateRaised: { type: GraphQLDate },
-                Value: { type: GraphQLFloat }
-            },
-            resolve(parentValue, { InvoiceNumber, ContractID, StatusID, DateRaised, Value }) {
-                return InvoiceService.CreateInvoice({ InvoiceNumber, ContractID, StatusID, DateRaised, Value });
-            }
-        },
-        UpdateInvoice: {
-            type: InvoiceSearchType,
-            args: {
-                InvoiceID: { type: GraphQLInt },
-                InvoiceNumber: { type: GraphQLString },
-                ContractID: { type: GraphQLInt },
-                StatusID: { type: GraphQLInt },
-                DateRaised: { type: GraphQLDate },
-                Value: { type: GraphQLFloat }
-            },
-            resolve(parentValue, { InvoiceID, InvoiceNumber, ContractID, StatusID, DateRaised, Value }) {
-                return InvoiceService.UpdateInvoice({ InvoiceID, InvoiceNumber, ContractID, StatusID, DateRaised, Value });
             }
         },
         createAssetMaster: {
@@ -128,17 +99,56 @@ const mutation = new GraphQLObjectType({
         updateAssetMaster: {
             type: AssetMasterType,
             args: {
-                id: { type: GraphQLInt },
+                hierarchyTypeId: { type: GraphQLInt },
+                masterId: { type: GraphQLInt },
+                classId: { type: GraphQLInt },
                 name: { type: GraphQLString },
                 description: { type: GraphQLString },
                 serial: { type: GraphQLString },
                 registration: { type: GraphQLString },
                 acquisitionDate: { type: GraphQLDate },
+                serviceDate: { type: GraphQLDate },
                 retirementDate: { type: GraphQLDate },
-                hierarchyTypeId: { type: GraphQLInt }
+                purchasePrice: { type: GraphQLFloat },
+                purchaseOrderNumber: { type: GraphQLString },
+                creatorId: { type: GraphQLInt },
+                id: { type: GraphQLInt }
             },
-            resolve(parentValue, { id, name, description, serial, registration, acquisitionDate, retirementDate, hierarchyTypeId }) {
-                return AssetMasterService.update({ id, name, description, serial, registration, acquisitionDate, retirementDate, hierarchyTypeId });
+            resolve(parentValue, 
+                { 
+                    hierarchyTypeId,
+                    masterId,
+                    classId,
+                    name, 
+                    description, 
+                    serial, 
+                    registration, 
+                    acquisitionDate, 
+                    serviceDate, 
+                    retirementDate, 
+                    purchasePrice,
+                    purchaseOrderNumber,
+                    creatorId,
+                    id
+                }) {
+                return AssetMasterService.update(
+                    { 
+                        hierarchyTypeId,
+                        masterId,
+                        classId,
+                        name, 
+                        description, 
+                        serial, 
+                        registration, 
+                        acquisitionDate, 
+                        serviceDate,  
+                        retirementDate, 
+                        purchasePrice,
+                        purchaseOrderNumber,
+                        creatorId,
+                        id
+                    }
+                );
             }
         }
     }

@@ -9,10 +9,8 @@ import { Router, hashHistory, Route, IndexRoute } from 'react-router';
 import App from './components/App';
 import LoginForm from './components/LoginForm';
 import SignupForm from './components/SignupForm';
-import InvoiceSearch from './components/InvoiceSearch';
-import InvoiceEdit from './components/InvoiceEdit';
-import InvoiceCreate from './components/InvoiceCreate';
 import AssetCreate from './components/AssetCreate';
+import AssetEdit from './components/AssetEdit';
 import AssetSearch from './components/AssetSearch';
 import requireAuth from './components/requireAuth';
 import { DatePicker } from 'antd';
@@ -49,11 +47,9 @@ const Root = () => {
           <IndexRoute component={LoginForm} />
           <Route path="login" component={LoginForm} />
           <Route path="signup" component={SignupForm} />
-          <Route path="invoiceCreate" component={requireAuth(InvoiceCreate)} />
-          <Route path="invoiceSearch" component={requireAuth(InvoiceSearch)} />
-          <Route path="invoiceEdit/:id" component={requireAuth(InvoiceEdit)} />
           <Route path="assetSearch" component={requireAuth(AssetSearch)} />
           <Route path="assetCreate" component={requireAuth(AssetCreate)} />
+          <Route path="assetEdit/:id" component={requireAuth(AssetEdit)} />
         </Route>
       </Router>
     </ApolloProvider>

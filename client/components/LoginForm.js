@@ -16,7 +16,7 @@ class LoginForm extends Component {
         if (!this.props.data.user && nextProps.data.user) {
             //redirect to dashboard
             //user wasn't signed in but now is
-            hashHistory.push('/invoiceSearch');
+            hashHistory.push('/assetSearch');
         }
     }
     onSubmit({ email, password }) {
