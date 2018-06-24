@@ -24,20 +24,20 @@ const app = express();
 // };
 
 //MySQL connection settings
-// const options = {
-//   host: 'sql12.freemysqlhosting.net',
-//   port: 3306,
-//   user: 'sql12244174',
-//   password: 'b8cjIpVbix',
-//   database: 'sql12244174'
-// };
 const options = {
-  host: 'localhost',
+  host: 'sql12.freemysqlhosting.net',
   port: 3306,
-  user: 'root',
-  password: 'Mechanics!',
-  database: 'assetid'
+  user: 'sql12244174',
+  password: 'b8cjIpVbix',
+  database: 'sql12244174'
 };
+// const options = {
+//   host: 'localhost',
+//   port: 3306,
+//   user: 'root',
+//   password: '',
+//   database: 'assetid'
+// };
 
 // db.connect(options)
 //   .then(console.log("MSSQL CONNECTION POOL CREATED."))

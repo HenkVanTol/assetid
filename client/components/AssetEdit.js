@@ -22,7 +22,7 @@ let state = {
     registration: null,
     acquisitionDate: moment(),
     retirementDate: moment(),
-    serviceDate: null,
+    serviceDate: moment(),
     purchasePrice: null,
     purchaseOrderNumber: null,
     creatorId: null,
@@ -51,7 +51,6 @@ class AssetCreate extends Component {
                     fetchPolicy: 'network-only'
                 }
             }).then((result) => {
-                console.log("HERE: ", result);
                 let asset = result.data.assetMasterById;
                 if (asset) {
                     this.mapAsset(asset);
