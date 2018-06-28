@@ -79,30 +79,67 @@ class AssetSearch extends Component {
         state = this.state;
     }
     render() {
+        const formItemLayout = {
+            labelCol: {
+                xs: { span: 12 },
+                sm: { span: 12 },
+                md: { span: 12 },
+                lg: { span: 6 },
+                xl: { span: 6 }
+            },
+            wrapperCol: {
+                xs: { span: 12 },
+                sm: { span: 12 },
+                md: { span: 12 },
+                lg: { span: 12 },
+                xl: { span: 12 }
+            },
+        };
+        const colLayout = {
+            xs: { span: 24 },
+            sm: { span: 24 },
+            md: { span: 12 },
+            lg: { span: 12 },
+            xl: { span: 12 },
+        };
         return (
             <div>
-                <Row gutter={16}>
-                    <FormItemLabel value="Name: " />
-                    <FormItemTextInput value={this.state.name} onChange={e => this.setState({ name: e.target.value })} />
-                </Row>
-                <Row gutter={16}>
-                    <FormItemLabel value="Description: " />
-                    <FormItemTextInput value={this.state.description} onChange={e => this.setState({ description: e.target.value })} />
-                </Row>
-                <Row gutter={16}>
-                    <Col xs={12} sm={12} md={6} lg={6} xl={6} />
-                    <Col xs={12} sm={12} md={6} lg={6} xl={6}>
-                        <Button type="primary" style={{ width: '100%' }} size="large" onClick={() => this.search()}>Search</Button>
+                <h2>Search Assets</h2>
+                <Row>
+                    <Col {...colLayout}>
+                        <FormItem label="Description" {...formItemLayout}>
+                            {
+                                <Input value={this.state.description} onChange={e => this.setState({ description: e.target.value })} />
+                            }
+                        </FormItem>
                     </Col>
-                    <Col xs={12} sm={12} md={6} lg={6} xl={6} />
                 </Row>
-                <Row gutter={16}>
+                <Row>
+                    <Col {...colLayout}>
+                        <FormItem label="Name" {...formItemLayout}>
+                            {
+                                <Input value={this.state.name} onChange={e => this.setState({ name: e.target.value })} />
+                            }
+                        </FormItem>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col {...colLayout} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                    {/* <Col {...colLayout} style={{ alignItems: 'center' }}> */}
+                        <Button type="primary" style={{ width: '50%' }} size="large" onClick={() => this.search()}>Search</Button>
+                    </Col>
+                </Row>
+                <Row>
+                    <br>
+                    </br>
+                </Row>
+                <Row>
                     <div className="errors">
                         {this.state.errors.map(error => <div key={error}>{error}</div>)}
                     </div>
                 </Row>
-                <Row gutter={16}>
-                    <Col span={16}>
+                <Row>
+                    <Col>
                         <Table rowSelection={this.rowSelection} dataSource={this.state.dataSource} columns={this.columns} rowKey={record => record.id} />
                     </Col>
                 </Row>
