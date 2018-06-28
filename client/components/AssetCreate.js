@@ -391,12 +391,19 @@ class AssetCreate extends Component {
                         </Row> */}
                         <br>
                         </br>
-                        <Row>
-                            <Col span={8} />
-                            <Col span={8}>
+                        {/* <Row>
+                            <Col {...colLayout} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                                 <Button type="primary" style={{ width: '100%' }} size="large" htmlType="submit">Submit</Button>
                             </Col>
+                        </Row> */}
+                        <Row>
                             <Col span={8} />
+                            <Col span={8} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                                <Button type="primary" size="large" htmlType="submit">Submit</Button>
+                            </Col>
+                            <Col span={8} />
+                        </Row>
+                        <Row>
                             <div className="errors">
                                 {this.state.errors.map(error => <div key={error}>{error}</div>)}
                             </div>

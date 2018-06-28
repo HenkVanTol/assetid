@@ -124,9 +124,11 @@ class AssetSearch extends Component {
                     </Col>
                 </Row>
                 <Row>
-                    <Col {...colLayout} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                    {/* <Col {...colLayout} style={{ alignItems: 'center' }}> */}
-                        <Button type="primary" style={{ width: '50%' }} size="large" onClick={() => this.search()}>Search</Button>
+                    <Col {...colLayout}>
+                        {/* <Col {...colLayout} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}> */}
+                        <FormItem label=" " colon={false} {...formItemLayout}>
+                            <Button type="primary" size="large" onClick={() => this.search()}>Search</Button>
+                        </FormItem>
                     </Col>
                 </Row>
                 <Row>
