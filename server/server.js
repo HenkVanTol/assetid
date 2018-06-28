@@ -31,13 +31,13 @@ const options = {
   password: 'b8cjIpVbix',
   database: 'sql12244174'
 };
-const options = {
-  host: 'localhost',
-  port: 3306,
-  user: 'root',
-  password: '',
-  database: 'assetid'
-};
+// const options = {
+//   host: 'localhost',
+//   port: 3306,
+//   user: 'root',
+//   password: '',
+//   database: 'assetid'
+// };
 
 // db.connect(options)
 //   .then(console.log("MSSQL CONNECTION POOL CREATED."))
