@@ -189,12 +189,14 @@ class AssetCreate extends Component {
     render() {
         if (this.props.data.loading) {
             return (
-                // <div>Loading...</div>
-                <div className='sweet-loading'>
-                    <RingLoader
-                        color={'orange'}
-                        loading={this.props.data.loading}
-                    />
+                <div className='center-div'>
+                    <div className='sweet-loading' >
+                        <RingLoader
+                            size={120}
+                            color={'orange'}
+                            loading={this.props.data.loading}
+                        />
+                    </div>
                 </div>
             )
         }
@@ -390,11 +392,11 @@ class AssetCreate extends Component {
                                     <Input value={this.state.purchaseOrderNumber} onChange={e => this.setState({ purchaseOrderNumber: e.target.value })} />
                                 </FormItem>
                             </Col>
-                            <Col {...colLayout}>
+                            {/* <Col {...colLayout}>
                                 <FormItem label="Master" {...formItemLayout}>
                                     <Input value={this.state.masterId} onChange={e => this.setState({ masterId: e.target.value })} />
                                 </FormItem>
-                            </Col>
+                            </Col> */}
                         </Row>
                         <br>
                         </br>

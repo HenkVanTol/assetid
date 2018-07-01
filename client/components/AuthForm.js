@@ -27,7 +27,7 @@ class AuthForm extends Component {
                                 <label>Email: </label>
                                 <Input
                                     addonBefore={"Email: "}
-                                    prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                                    // prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
                                     placeholder="Email"
                                     value={this.state.email}
                                     onChange={e => this.setState({ email: e.target.value })}
@@ -36,7 +36,7 @@ class AuthForm extends Component {
                             <FormItem>
                                 <Input
                                     addonBefore={"Password: "}
-                                    prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                                    // prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
                                     placeholder="Password"
                                     type="password"
                                     value={this.state.password}

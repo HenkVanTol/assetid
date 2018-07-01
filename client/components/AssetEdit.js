@@ -11,6 +11,7 @@ import userQuery from '../queries/CurrentUser';
 
 import toastr from 'toastr';
 import '../../node_modules/toastr/build/toastr.css';
+import { RingLoader } from 'react-spinners';
 
 let state = {
     hierarchyTypeId: null,
@@ -206,7 +207,15 @@ class AssetCreate extends Component {
     render() {
         if (this.props.data.loading) {
             return (
-                <div>Loading...</div>
+                <div className='center-div'>
+                    <div className='sweet-loading' >
+                        <RingLoader
+                            size={120}
+                            color={'orange'}
+                            loading={this.props.data.loading}
+                        />
+                    </div>
+                </div>
             )
         }
         else {
@@ -390,26 +399,31 @@ class AssetCreate extends Component {
                                 </FormItem>
                             </Col>
                         </Row>
-                        {/* <Row>
+                        <Row>
                             <Col {...colLayout}>
                                 <FormItem label="Purchase Order" {...formItemLayout}>
                                     <Input value={this.state.purchaseOrderNumber} onChange={e => this.setState({ purchaseOrderNumber: e.target.value })} />
                                 </FormItem>
                             </Col>
-                            <Col {...colLayout}>
+                            {/* <Col {...colLayout}>
                                 <FormItem label="Master" {...formItemLayout}>
                                     <Input value={this.state.masterId} onChange={e => this.setState({ masterId: e.target.value })} />
                                 </FormItem>
-                            </Col>
-                        </Row> */}
+                            </Col> */}
+                        </Row>
                         <br>
                         </br>
                         <Row>
-                            <Col span={8} />
-                            <Col span={8}>
-                                <Button type="primary" style={{ width: '100%' }} size="large" htmlType="submit">Submit</Button>
-                            </Col>
-                            <Col span={8} />
+                            <Row>
+                                <Col {...colLayout}>
+                                    {/* <Col {...colLayout} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}> */}
+                                    <FormItem label=" " colon={false} {...formItemLayout}>
+                                        <Button type="primary" size="large" htmlType="submit">Submit</Button>
+                                    </FormItem>
+                                </Col>
+                            </Row>
+                        </Row>
+                        <Row>
                             <div className="errors">
                                 {this.state.errors.map(error => <div key={error}>{error}</div>)}
                             </div>
