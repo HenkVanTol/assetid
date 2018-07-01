@@ -10,6 +10,8 @@ import userQuery from '../queries/CurrentUser';
 
 import toastr from 'toastr';
 import '../../node_modules/toastr/build/toastr.css';
+import { RingLoader } from 'react-spinners';
+
 
 let state = {
     hierarchyTypeId: null,
@@ -187,7 +189,13 @@ class AssetCreate extends Component {
     render() {
         if (this.props.data.loading) {
             return (
-                <div>Loading...</div>
+                // <div>Loading...</div>
+                <div className='sweet-loading'>
+                    <RingLoader
+                        color={'orange'}
+                        loading={this.props.data.loading}
+                    />
+                </div>
             )
         }
         else {

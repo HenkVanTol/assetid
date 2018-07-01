@@ -11,7 +11,7 @@
   },
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js --ignore client --ignore dist"
+    "start": "node index.js --ignore client --ignore dist"
   },
   "author": "",
   "license": "ISC",
@@ -50,6 +50,7 @@
     "moment": "^2.21.0",
     "mssql": "^4.1.0",
     "mssql-session-store": "^1.0.0",
+    "mysql": "^2.15.0",
     "nodemon": "^1.17.5",
     "passport": "^0.3.2",
     "passport-local": "^1.0.0",
@@ -58,6 +59,7 @@
     "react-datepicker": "^1.4.0",
     "react-dom": "^15.4.2",
     "react-router": "^3.0.2",
+    "react-spinners": "^0.3.2",
     "reactjs-toastr": "^1.0.5",
     "style-loader": "^0.19.1",
     "sweetalert2": "^7.18.0",
@@ -65,8 +67,7 @@
     "url-loader": "^0.6.2",
     "webpack": "^2.2.0",
     "webpack-dev-middleware": "^1.9.0",
-    "write-file-webpack-plugin": "^4.2.0",
-    "mysql": "^2.15.0"
+    "write-file-webpack-plugin": "^4.2.0"
   },
   "devDependencies": {}
 }
