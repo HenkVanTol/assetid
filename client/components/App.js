@@ -25,9 +25,9 @@ const App = (props) => {
                         </Content>
                     </Layout>
                 </Layout>
-                <Footer style={{ textAlign: 'center' }}>
+                {/* <Footer style={{ textAlign: 'center' }}>
                     ©2018 Henk van Tol
-                </Footer>
+                </Footer> */}
             </Layout>
         </div>
     );
