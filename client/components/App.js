@@ -20,7 +20,7 @@ const App = (props) => {
                     <SideMenu />
                     <Layout style={{ padding: '0 24px' }}>
                         {/* <Content style={{ background: '#fff', padding: '24px', margin: 0, minHeight: 500 }}> */}
-                        <Content style={{ background: '#fff', padding: '24px', margin: 0, minHeight: 700 }}>
+                        <Content style={{ background: '#fff', padding: '24px', margin: 0, minHeight: 800 }}>
                             {props.children}
                         </Content>
                     </Layout>
