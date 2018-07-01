@@ -6,7 +6,6 @@ const FormItem = Form.Item;
 const Option = Select.Option;
 import create from '../mutations/CreateAssetMaster';
 import findLookups from '../queries/AssetLookups';
-import hierarchyTypeQuery from '../queries/HierarchyType';
 import userQuery from '../queries/CurrentUser';
 
 import toastr from 'toastr';
@@ -22,7 +21,7 @@ let state = {
     registration: null,
     acquisitionDate: moment(),
     retirementDate: moment(),
-    serviceDate: null,
+    serviceDate: moment(),
     purchasePrice: null,
     purchaseOrderNumber: null,
     creatorId: null,
@@ -377,7 +376,7 @@ class AssetCreate extends Component {
                                 </FormItem>
                             </Col>
                         </Row>
-                        {/* <Row>
+                        <Row>
                             <Col {...colLayout}>
                                 <FormItem label="Purchase Order" {...formItemLayout}>
                                     <Input value={this.state.purchaseOrderNumber} onChange={e => this.setState({ purchaseOrderNumber: e.target.value })} />
@@ -388,7 +387,7 @@ class AssetCreate extends Component {
                                     <Input value={this.state.masterId} onChange={e => this.setState({ masterId: e.target.value })} />
                                 </FormItem>
                             </Col>
-                        </Row> */}
+                        </Row>
                         <br>
                         </br>
                         {/* <Row>
@@ -396,12 +395,20 @@ class AssetCreate extends Component {
                                 <Button type="primary" style={{ width: '100%' }} size="large" htmlType="submit">Submit</Button>
                             </Col>
                         </Row> */}
-                        <Row>
+                        {/* <Row>
                             <Col span={8} />
                             <Col span={8} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                                 <Button type="primary" size="large" htmlType="submit">Submit</Button>
                             </Col>
                             <Col span={8} />
+                        </Row> */}
+                        <Row>
+                            <Col {...colLayout}>
+                                {/* <Col {...colLayout} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}> */}
+                                <FormItem label=" " colon={false} {...formItemLayout}>
+                                    <Button type="primary" size="large" htmlType="submit">Submit</Button>
+                                </FormItem>
+                            </Col>
                         </Row>
                         <Row>
                             <div className="errors">

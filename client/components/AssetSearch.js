@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { withApollo, graphql } from 'react-apollo';
 import query from '../queries/AssetMaster';
+import deleteAsset  from '../mutations/DeleteAsset';
 import { Form, Row, Col, Input, Button, Table } from 'antd';
 const FormItem = Form.Item;
-import FormItemTextInput from './common/FormItemTextInput';
-import FormItemLabel from './common/FormItemLabel';
 import { Link } from 'react-router';
 import moment from 'moment';
+import swal from 'sweetalert2';
 
 let state = { name: null, description: null, hierarchyTypeId: null, errors: [], dataSource: [] };
 
@@ -44,6 +44,11 @@ class AssetSearch extends Component {
             render: (text, record) => (
                 <Link to={`/assetEdit/${record.id}`}>Edit</Link>
             )
+        },
+        {
+            render: (text, record) => (
+                <Button onClick={() => this.delete(record.id)}>Delete</Button>
+            )
         }];
         // this.rowSelection = {
         //     onChange: (selectedRowKeys, selectedRows) => {
@@ -51,6 +56,34 @@ class AssetSearch extends Component {
         //         console.log("selectedRows[0]: ", selectedRows[0]);
         //     },
         // };
+    }
+    delete(id) {
+        console.log("delete: ", id);
+        swal({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: 'rgb(248, 125, 9)',
+            cancelButtonColor: 'green',
+            confirmButtonText: 'OK',
+            animation: false
+        }).then((result) => {
+            if (result.value) {
+                this.props.client.mutate({
+                    mutation: deleteAsset,
+                    variables: {
+                        id
+                    }
+                }).then(() => {
+                    this.search();
+                }).catch(res => {
+                    console.log("res: ", res);
+                    const errors = res.graphQLErrors.map(error => error.message);
+                    this.setState({ errors });
+                });
+            }
+        })
     }
     search() {
         let { name, description } = this.state;

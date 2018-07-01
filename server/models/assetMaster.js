@@ -23,9 +23,12 @@ function assetClasses() {
 }
 
 function find(name, description) {
-    console.log("description", description);
+    if (name == "") name = null;
+    if (description == "") description = null;
+    let values = ['%' + name + '%', '%' + description + '%'];
+    console.log("values: ", values);
     return new Promise(function (resolve, reject) {
-        db.get().query('select * from assetMaster where description = ?', description, function (err, rows) {
+        db.get().query(`select * from assetMaster where name like ? or description like ?`, values, function (err, rows) {
             if (err) {
                 return reject(err);
             }
@@ -39,6 +42,16 @@ function findById(id) {
         db.get().query('select * from assetMaster where id = ?', id, function (err, rows) {
             if (err) return reject(err);
             resolve(rows[0]);
+        });
+    });
+}
+
+function deleteAsset(id) {
+    console.log("in delete");
+    return new Promise(function (resolve, reject) {
+        db.get().query('delete from assetMaster where id = ?', id, function (err, rows) {
+            if (err) return reject(err);
+            resolve({id});
         });
     });
 }
@@ -157,4 +170,4 @@ function update(assetMaster) {
     });
 }
 
-module.exports = { hierarchyTypes, assetClasses, find, create, findById, update };
+module.exports = { hierarchyTypes, assetClasses, find, create, findById, update, deleteAsset };

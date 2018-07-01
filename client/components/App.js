@@ -19,7 +19,8 @@ const App = (props) => {
                 <Layout>
                     <SideMenu />
                     <Layout style={{ padding: '0 24px' }}>
-                        <Content style={{ background: '#fff', padding: '24px', margin: 0, minHeight: 500 }}>
+                        {/* <Content style={{ background: '#fff', padding: '24px', margin: 0, minHeight: 500 }}> */}
+                        <Content style={{ background: '#fff', padding: '24px', margin: 0, minHeight: 700 }}>
                             {props.children}
                         </Content>
                     </Layout>

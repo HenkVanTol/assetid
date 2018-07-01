@@ -48,6 +48,18 @@ function findById(id) {
     });
 }
 
+function deleteAsset(id) {
+    return new Promise((resolve, reject) => {
+        AssetMasterModel.deleteAsset(id)
+            .then(result => {
+                resolve(result);
+            })
+            .catch(err => {
+                reject(err);
+            });
+    });
+}
+
 function create(assetMaster) {
     return new Promise((resolve, reject) => {
         AssetMasterModel.create(assetMaster)
@@ -72,4 +84,4 @@ function update(assetMaster) {
     });
 }
 
-module.exports = { hierarchyTypes, assetClasses, find, create, findById, update };
+module.exports = { hierarchyTypes, assetClasses, find, create, findById, update, deleteAsset };

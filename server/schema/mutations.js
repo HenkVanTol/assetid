@@ -44,6 +44,15 @@ const mutation = new GraphQLObjectType({
                 return AuthService.login({ email, password, req });
             }
         },
+        deleteAsset: {
+            type: AssetMasterType,
+            args: {
+                id: { type: GraphQLInt }
+            },
+            resolve(parentValue, { id } ) {
+                return AssetMasterService.deleteAsset(id);
+            }
+        },
         createAssetMaster: {
             type: AssetMasterType,
             args: {
