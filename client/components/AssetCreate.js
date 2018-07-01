@@ -154,7 +154,7 @@ class AssetCreate extends Component {
                             creatorId
                         }
                     }).then(() => {
-                        toastr.success('Invoice Created', 'Create Invoice', { timeOut: 1000 });
+                        toastr.success('Asset Created', 'Create Asset', { timeOut: 1000 });
                     }).catch(res => {
                         const errors = res.graphQLErrors.map(error => error.message);
                         this.setState({ errors });
