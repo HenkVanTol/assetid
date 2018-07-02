@@ -64,7 +64,7 @@ class AssetSearch extends Component {
             text: "You won't be able to revert this!",
             type: 'warning',
             showCancelButton: true,
-            confirmButtonColor: 'rgb(248, 125, 9)',
+            confirmButtonColor: 'red',
             cancelButtonColor: 'green',
             confirmButtonText: 'OK',
             animation: false
