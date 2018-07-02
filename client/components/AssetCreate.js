@@ -193,7 +193,7 @@ class AssetCreate extends Component {
                     <div className='sweet-loading' >
                         <RingLoader
                             size={120}
-                            color={'orange'}
+                            color={'red'}
                             loading={this.props.data.loading}
                         />
                     </div>
