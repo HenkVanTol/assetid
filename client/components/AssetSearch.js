@@ -60,14 +60,16 @@ class AssetSearch extends Component {
     delete(id) {
         console.log("delete: ", id);
         swal({
-            title: 'Are you sure?',
-            text: "You won't be able to revert this!",
-            type: 'warning',
+            title: 'Delete Asset',
+            text: "Are you sure?",
+            //type: 'warning',
             showCancelButton: true,
             confirmButtonColor: 'red',
             cancelButtonColor: 'green',
             confirmButtonText: 'OK',
-            animation: false
+            animation: false,
+            width: 400, 
+            height: 200
         }).then((result) => {
             if (result.value) {
                 this.props.client.mutate({
@@ -175,7 +177,7 @@ class AssetSearch extends Component {
                 </Row>
                 <Row>
                     <Col>
-                        <Table rowSelection={this.rowSelection} dataSource={this.state.dataSource} columns={this.columns} rowKey={record => record.id} />
+                        <Table pagination={{ pageSize: 5 }} rowSelection={this.rowSelection} dataSource={this.state.dataSource} columns={this.columns} rowKey={record => record.id} />
                     </Col>
                 </Row>
             </div>
