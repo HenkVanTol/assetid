@@ -11,6 +11,7 @@ import userQuery from '../queries/CurrentUser';
 import toastr from 'toastr';
 import '../../node_modules/toastr/build/toastr.css';
 import { RingLoader } from 'react-spinners';
+import { BarLoader } from 'react-spinners';
 
 
 let state = {
@@ -191,8 +192,8 @@ class AssetCreate extends Component {
             return (
                 <div className='center-div'>
                     <div className='sweet-loading' >
-                        <RingLoader
-                            size={120}
+                        <BarLoader
+                            size={400}
                             color={'red'}
                             loading={this.props.data.loading}
                         />

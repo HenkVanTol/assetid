@@ -9,7 +9,7 @@ class SignupForm extends Component {
     constructor(props) {
         super(props);
 
-        this.state = { errors: [], user: {} };
+        this.state = { errors: [], user: {}, loading: false  };
     }
 
     componentWillUpdate(nextProps) {
@@ -20,10 +20,15 @@ class SignupForm extends Component {
     }
 
     onSubmit({ email, password }) {
+        this.setState({ loading: true });
         this.props.mutate({
             variables: { email, password },
             refetchQueries: [{ query }]
-        }).catch(res => {
+        })
+        .then(() => {
+            this.setState({ loading: false });
+        })
+        .catch(res => {
             const errors = res.graphQLErrors.map(error => error.message);
             this.setState({ errors }); //es6: name value is the same
         });
@@ -32,7 +37,7 @@ class SignupForm extends Component {
         return (
             <div>
                 <h2>Sign up</h2>
-                <AuthForm onSubmit={this.onSubmit.bind(this)} errors={this.state.errors} />
+                <AuthForm errors={this.state.errors} loading={this.state.loading} onSubmit={this.onSubmit.bind(this)} />
             </div>
         );
     }

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Button, Input, Row, Col, Form, Icon } from 'antd';
 const FormItem = Form.Item;
+import { BarLoader } from 'react-spinners';
 
 class AuthForm extends Component {
     constructor(props) {
@@ -79,6 +80,17 @@ class AuthForm extends Component {
                 {/* <Row>
                     <Button type="primary" style={{ width: '100%' }} size="large" htmlType="submit" >Submit</Button>
                 </Row> */}
+                <Row>
+                    <div>
+                        <div className='sweet-loading center-div-horizontal' >
+                            <BarLoader
+                                size={800}
+                                color={'red'}
+                                loading={this.props.loading}
+                            />
+                        </div>
+                    </div>
+                </Row>
                 <Row>
                     <div className="errors">
                         {this.props.errors.map(error => <div key={error}>{error}</div>)}

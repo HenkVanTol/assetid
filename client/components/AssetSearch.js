@@ -65,7 +65,7 @@ class AssetSearch extends Component {
             //type: 'warning',
             showCancelButton: true,
             confirmButtonColor: 'red',
-            cancelButtonColor: 'green',
+            cancelButtonColor: 'grey',
             confirmButtonText: 'OK',
             animation: false,
             width: 400, 
