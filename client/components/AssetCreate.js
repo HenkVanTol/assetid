@@ -7,12 +7,15 @@ const Option = Select.Option;
 import create from '../mutations/CreateAssetMaster';
 import findLookups from '../queries/AssetLookups';
 import userQuery from '../queries/CurrentUser';
+import findByHierarchyTypeId from '../queries/AssetMasterByHierarchyTypeId';
 
 import toastr from 'toastr';
 import '../../node_modules/toastr/build/toastr.css';
 import { RingLoader } from 'react-spinners';
 import { BarLoader } from 'react-spinners';
 
+const masterHierarchyType = 1;
+const componentHierarchyType = 2;
 
 let state = {
     hierarchyTypeId: null,
@@ -30,6 +33,7 @@ let state = {
     creatorId: null,
     hierarchyTypes: [],
     assetClasses: [],
+    assetMasters: [],
     hierarchyTypeId: null,
     creatorId: null,
     errors: [],
@@ -77,6 +81,7 @@ class AssetCreate extends Component {
             creatorId: prevState.creatorId,
             hierarchyTypes: prevState.hierarchyTypes,
             assetClasses: prevState.assetClasses,
+            assetMasters: prevState.assetMasters,
             errors: prevState.errors
         }));
     }
@@ -169,7 +174,7 @@ class AssetCreate extends Component {
     }
     renderHierarchyTypes() {
         if (!this.props.data.loading) {
-            console.log("hierarchyTypes in render(): ", this.state.hierarchyTypes);
+            //console.log("hierarchyTypes in render(): ", this.state.hierarchyTypes);
             return (
                 this.state.hierarchyTypes.map(hierarchyType => {
                     return <Option key={hierarchyType.id} value={hierarchyType.id}>{hierarchyType.description}</Option>;
@@ -179,13 +184,35 @@ class AssetCreate extends Component {
     }
     renderAssetClasses() {
         if (!this.props.data.loading) {
-            console.log("assetClasses in render(): ", this.state.assetClasses);
+            //console.log("assetClasses in render(): ", this.state.assetClasses);
             return (
                 this.state.assetClasses.map(assetClass => {
                     return <Option key={assetClass.classid} value={assetClass.classid}>{assetClass.description}</Option>;
                 })
             );
         }
+    }
+    renderMasters() {
+        if (!this.props.data.loading) {
+            //console.log("assetMasters in render(): ", this.state.assetMasters);
+            return (
+                this.state.assetMasters.map(assetMaster => {
+                    return <Option key={assetMaster.id} value={assetMaster.id}>{assetMaster.name}</Option>;
+                })
+            );
+        }
+    }
+    loadMasters(selectedHierarchyTypeId) {
+        this.setState({hierarchyTypeId: selectedHierarchyTypeId, masterId: null});
+        this.props.client.query({
+            query: findByHierarchyTypeId,
+            variables: {
+                hierarchyTypeId: masterHierarchyType
+            }
+        }).then((result) => {
+            console.log("result: ", result);
+            this.setState({ assetMasters: result.data.assetMasterByHierarchyTypeId });
+        });
     }
     render() {
         if (this.props.data.loading) {
@@ -247,7 +274,10 @@ class AssetCreate extends Component {
                                                 message: 'Hierarchy Type is required',
                                             }],
                                         })(
-                                            <Select onChange={(value) => this.setState({ hierarchyTypeId: value })} >
+                                            // <Select onChange={(value) => this.setState({ hierarchyTypeId: value })} >
+                                            //     {this.renderHierarchyTypes()}
+                                            // </Select>
+                                            <Select onChange={(value) => this.loadMasters(value)} >
                                                 {this.renderHierarchyTypes()}
                                             </Select>
                                         )
@@ -393,11 +423,14 @@ class AssetCreate extends Component {
                                     <Input value={this.state.purchaseOrderNumber} onChange={e => this.setState({ purchaseOrderNumber: e.target.value })} />
                                 </FormItem>
                             </Col>
-                            {/* <Col {...colLayout}>
+                            <Col {...colLayout}>
+
                                 <FormItem label="Master" {...formItemLayout}>
-                                    <Input value={this.state.masterId} onChange={e => this.setState({ masterId: e.target.value })} />
+                                    <Select disabled={this.state.hierarchyTypeId != componentHierarchyType} value={this.state.masterId} onChange={(value) => this.setState({ masterId: value })} >
+                                        {this.renderMasters()}
+                                    </Select>
                                 </FormItem>
-                            </Col> */}
+                            </Col>
                         </Row>
                         <br>
                         </br>

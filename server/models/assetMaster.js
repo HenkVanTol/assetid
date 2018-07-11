@@ -46,12 +46,23 @@ function findById(id) {
     });
 }
 
+function findByHierarchyTypeId(hierarchyTypeId) {
+    return new Promise(function (resolve, reject) {
+        db.get().query('select * from assetMaster where hierarchyTypeId = ?', hierarchyTypeId, function (err, rows) {
+            if (err) {
+                return reject(err);
+            }
+            resolve(rows);
+        });
+    });
+}
+
 function deleteAsset(id) {
     console.log("in delete");
     return new Promise(function (resolve, reject) {
         db.get().query('delete from assetMaster where id = ?', id, function (err, rows) {
             if (err) return reject(err);
-            resolve({id});
+            resolve({ id });
         });
     });
 }
@@ -170,4 +181,4 @@ function update(assetMaster) {
     });
 }
 
-module.exports = { hierarchyTypes, assetClasses, find, create, findById, update, deleteAsset };
+module.exports = { hierarchyTypes, assetClasses, find, create, findById, update, deleteAsset, findByHierarchyTypeId };

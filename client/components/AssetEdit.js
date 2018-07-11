@@ -30,7 +30,6 @@ let state = {
     hierarchyTypes: [],
     assetClasses: [],
     hierarchyTypeId: null,
-    creatorId: null,
     errors: [],
     edit: false,
     id: null
