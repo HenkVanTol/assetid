@@ -5,9 +5,11 @@ import { Form, Row, Col, Input, Button, DatePicker, Select, Label } from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
 import create from '../mutations/CreateAssetMaster';
+import update from '../mutations/UpdateAssetMaster';
 import findLookups from '../queries/AssetLookups';
 import userQuery from '../queries/CurrentUser';
 import findByHierarchyTypeId from '../queries/AssetMasterByHierarchyTypeId';
+import findById from '../queries/AssetMasterById';
 
 import toastr from 'toastr';
 import '../../node_modules/toastr/build/toastr.css';
@@ -43,9 +45,55 @@ let state = {
 class AssetCreate extends Component {
     constructor(props) {
         super(props);
-        this.state = state;
+        console.log("state.edit: ", state.edit);
+        console.log("this.props.params.id: ", this.props.params.id);
+        if (!state.edit && !(this.props.params.id > 0)) {
+            this.state = state;
+        }
+        else
+        {
+            this.state = {
+                hierarchyTypeId: null,
+                masterId: null,
+                classId: null,
+                name: null,
+                description: null,
+                serial: null,
+                registration: null,
+                acquisitionDate: moment(),
+                retirementDate: moment(),
+                serviceDate: moment(),
+                purchasePrice: null,
+                purchaseOrderNumber: null,
+                creatorId: null,
+                hierarchyTypes: [],
+                assetClasses: [],
+                assetMasters: [],
+                hierarchyTypeId: null,
+                creatorId: null,
+                errors: [],
+                edit: false
+            };
+        }
     }
     componentDidMount() {
+        //edit existing
+        if (this.props.params.id) {
+            this.setState({ edit: true });
+            console.log("params id:", this.props.params.id);
+            this.props.client.query({
+                query: findById,
+                variables: { id: this.props.params.id },
+                options: {
+                    fetchPolicy: 'network-only'
+                }
+            }).then((result) => {
+                let asset = result.data.assetMasterById;
+                if (asset) {
+                    this.mapAsset(asset);
+                }
+            });
+        }
         console.log("state in did mount: ", this.state);
         this.props.client.query({
             query: findLookups,
@@ -90,6 +138,25 @@ class AssetCreate extends Component {
         // Remember state for the next mount
         state = this.state;
     }
+    mapAsset(asset) {
+        console.log("asset in mapAsset: ", asset);
+        this.setState({
+            hierarchyTypeId: asset.hierarchyTypeId,
+            masterId: asset.masterId,
+            classId: asset.classId,
+            name: asset.name,
+            description: asset.description,
+            serial: asset.serial,
+            registration: asset.registration,
+            acquisitionDate: moment(asset.acquisitionDate),
+            retirementDate: moment(asset.retirementDate),
+            serviceDate: moment(asset.serviceDate),
+            purchasePrice: asset.purchasePrice,
+            purchaseOrderNumber: asset.purchaseOrderNumber,
+            creatorId: asset.creatorId,
+            id: asset.id
+        });
+    }
     mapState(lookups) {
         console.log("lookups in mapstate: ", lookups);
         this.setState({
@@ -115,26 +182,42 @@ class AssetCreate extends Component {
                     serviceDate,
                     purchasePrice,
                     purchaseOrderNumber,
-                    creatorId
+                    creatorId,
+                    id
                 } = this.state;
 
                 if (this.state.edit == true) {
                     this.props.client.mutate({
                         mutation: update,
-                        variables: { InvoiceID, InvoiceNumber, ContractID, StatusID, DateRaised, Value }
+                        variables: {
+                            hierarchyTypeId,
+                            masterId,
+                            classId,
+                            name,
+                            description,
+                            serial,
+                            registration,
+                            acquisitionDate,
+                            retirementDate,
+                            serviceDate,
+                            purchasePrice,
+                            purchaseOrderNumber,
+                            creatorId,
+                            id
+                        }
                     }).then(() => {
                         this.props.client.query({
                             query: findById,
-                            variables: { InvoiceID: this.props.params.id },
+                            variables: { id },
                             options: {
                                 fetchPolicy: 'network-only'
                             }
                         }).then((result) => {
-                            let invoice = result.data.InvoiceByID[0];
-                            if (invoice) {
-                                this.mapState(invoice);
+                            let asset = result.data.assetMasterById;
+                            if (asset) {
+                                this.mapAsset(asset);
                             }
-                            toastr.success('Invoice Updated', 'Edit Invoice', { timeOut: 1000 });
+                            toastr.success('Asset Updated', 'Edit Asset', { timeOut: 1000 });
                         });
                     }).catch(res => {
                         const errors = res.graphQLErrors.map(error => error.message);
@@ -203,7 +286,7 @@ class AssetCreate extends Component {
         }
     }
     loadMasters(selectedHierarchyTypeId) {
-        this.setState({hierarchyTypeId: selectedHierarchyTypeId, masterId: null});
+        this.setState({ hierarchyTypeId: selectedHierarchyTypeId, masterId: null });
         this.props.client.query({
             query: findByHierarchyTypeId,
             variables: {
@@ -219,8 +302,8 @@ class AssetCreate extends Component {
             return (
                 <div className='center-div'>
                     <div className='sweet-loading' >
-                        <BarLoader
-                            size={400}
+                        <RingLoader
+                            size={120}
                             color={'red'}
                             loading={this.props.data.loading}
                         />
@@ -255,7 +338,9 @@ class AssetCreate extends Component {
             };
             return (
                 <div>
-                    <h2>Create Asset</h2>
+                    {
+                        (this.state.edit) ? <h2>Edit Asset</h2> : <h2>Create Asset</h2>
+                    }
                     <Form onSubmit={this.onSubmit.bind(this)} className="ant-advanced-search-form">
                         {/* <Row>
                             <FormItemLabel value="Contract: " />

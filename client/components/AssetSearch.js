@@ -42,7 +42,7 @@ class AssetSearch extends Component {
         },
         {
             render: (text, record) => (
-                <Link to={`/assetEdit/${record.id}`}>Edit</Link>
+                <Link to={`/assetCreate/${record.id}`}>Edit</Link>
             )
         },
         {

@@ -49,7 +49,8 @@ const Root = () => {
           <Route path="signup" component={SignupForm} />
           <Route path="assetSearch" component={requireAuth(AssetSearch)} />
           <Route path="assetCreate" component={requireAuth(AssetCreate)} />
-          <Route path="assetEdit/:id" component={requireAuth(AssetEdit)} />
+          <Route path="assetCreate/:id" component={requireAuth(AssetCreate)} />
+          {/* <Route path="assetEdit/:id" component={requireAuth(AssetEdit)} /> */}
         </Route>
       </Router>
     </ApolloProvider>

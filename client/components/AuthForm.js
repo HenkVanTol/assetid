@@ -81,7 +81,7 @@ class AuthForm extends Component {
                     <Button type="primary" style={{ width: '100%' }} size="large" htmlType="submit" >Submit</Button>
                 </Row> */}
                 <Row>
-                    <div>
+                    <Col {...colLayout}>
                         <div className='sweet-loading center-div-horizontal' >
                             <BarLoader
                                 size={800}
@@ -89,7 +89,7 @@ class AuthForm extends Component {
                                 loading={this.props.loading}
                             />
                         </div>
-                    </div>
+                    </Col>
                 </Row>
                 <Row>
                     <div className="errors">
