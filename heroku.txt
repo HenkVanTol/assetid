@@ -1,5 +1,6 @@
 https://assetid.herokuapp.com
 git add --all
 git commit -m "initial commit"
+heroku git:remote -a yourapp
 git push heroku master
 --testing
