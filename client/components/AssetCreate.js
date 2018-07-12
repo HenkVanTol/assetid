@@ -50,8 +50,7 @@ class AssetCreate extends Component {
         if (!state.edit && !(this.props.params.id > 0)) {
             this.state = state;
         }
-        else
-        {
+        else {
             this.state = {
                 hierarchyTypeId: null,
                 masterId: null,
@@ -112,6 +111,7 @@ class AssetCreate extends Component {
         }).then((result) => {
             this.setState({ creatorId: result.data.user.id });
         });
+        this.loadMasters(this.state.hierarchyTypeId);
         this.setState(prevState => ({
             hierarchyTypeId: prevState.hierarchyTypeId,
             masterId: prevState.masterId,
