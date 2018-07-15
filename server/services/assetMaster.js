@@ -108,4 +108,17 @@ function update(assetMaster) {
     });
 }
 
-module.exports = { hierarchyTypes, assetClasses, find, create, findById, update, deleteAsset, findByHierarchyTypeId };
+function setComponentMaster(componentId, masterId) {
+    return new Promise((resolve, reject) => {
+        AssetMasterModel.setComponentMaster(componentId, masterId)
+            .then(result => {
+                resolve(result);
+            })
+            .catch(err => {
+                reject(err);
+            });
+    });
+}
+
+
+module.exports = { hierarchyTypes, assetClasses, find, create, findById, update, deleteAsset, findByHierarchyTypeId, setComponentMaster };

@@ -159,6 +159,16 @@ const mutation = new GraphQLObjectType({
                     }
                 );
             }
+        },
+        setComponentMaster: {
+            type: AssetMasterType,
+            args: {
+                componentId: { type: GraphQLInt },
+                masterId: { type: GraphQLInt }
+            },
+            resolve(parentValue, { componentId, masterId }) {
+                return AssetMasterService.setComponentMaster(componentId,masterId);
+            }
         }
     }
 });

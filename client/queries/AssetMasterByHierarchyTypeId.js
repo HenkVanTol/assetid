@@ -5,7 +5,12 @@ export default gql`
     {
         assetMasterByHierarchyTypeId (hierarchyTypeId: $hierarchyTypeId) {
             id,
-            name
+            name,
+            description,
+            serial,
+            registration,
+            acquisitionDate,
+            masterId
         }
     }
 `;

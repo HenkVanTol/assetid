@@ -12,6 +12,7 @@ import SignupForm from './components/SignupForm';
 import AssetCreate from './components/AssetCreate';
 import AssetEdit from './components/AssetEdit';
 import AssetSearch from './components/AssetSearch';
+import ManageComponents from './components/ManageComponents';
 import requireAuth from './components/requireAuth';
 import { DatePicker } from 'antd';
 
@@ -50,6 +51,7 @@ const Root = () => {
           <Route path="assetSearch" component={requireAuth(AssetSearch)} />
           <Route path="assetCreate" component={requireAuth(AssetCreate)} />
           <Route path="assetCreate/:id" component={requireAuth(AssetCreate)} />
+          <Route path="components/:id" component={requireAuth(ManageComponents)} />
           {/* <Route path="assetEdit/:id" component={requireAuth(AssetEdit)} /> */}
         </Route>
       </Router>

@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import { withApollo, graphql } from 'react-apollo';
 import query from '../queries/AssetMaster';
-import deleteAsset  from '../mutations/DeleteAsset';
+import deleteAsset from '../mutations/DeleteAsset';
 import { Form, Row, Col, Input, Button, Table } from 'antd';
 const FormItem = Form.Item;
 import { Link } from 'react-router';
 import moment from 'moment';
 import swal from 'sweetalert2';
+
+const masterHierarchyType = 1;
 
 let state = { name: null, description: null, hierarchyTypeId: null, errors: [], dataSource: [] };
 
@@ -46,6 +48,14 @@ class AssetSearch extends Component {
             )
         },
         {
+            render: (text, record) => {
+                if (record.hierarchyTypeId == masterHierarchyType)
+                    return (
+                        <Link to={`/components/${record.id}`}>Components</Link>
+                    )
+            }
+        },
+        {
             render: (text, record) => (
                 <Button onClick={() => this.delete(record.id)}>Delete</Button>
             )
@@ -68,7 +78,7 @@ class AssetSearch extends Component {
             cancelButtonColor: 'grey',
             confirmButtonText: 'OK',
             animation: false,
-            width: 400, 
+            width: 400,
             height: 200
         }).then((result) => {
             if (result.value) {
