@@ -11,7 +11,7 @@ import { BarLoader } from 'react-spinners';
 
 const masterHierarchyType = 1;
 
-let state = { name: null, description: null, hierarchyTypeId: null, errors: [], dataSource: [] };
+let state = { name: null, description: null, hierarchyTypeId: null, errors: [], dataSource: [], searching: false };
 
 class AssetSearch extends Component {
 
@@ -99,7 +99,9 @@ class AssetSearch extends Component {
         })
     }
     search() {
+        this.setState({ searching: true });
         let { name, description } = this.state;
+
         this.props.client.query({
             query,
             variables: { name, description },
@@ -109,6 +111,7 @@ class AssetSearch extends Component {
         }).then((result) => {
             console.log("result", result);
             this.setState({ dataSource: result.data.assetMaster });
+            this.setState({ searching: false });
         });
     }
     componentDidMount() {
@@ -187,7 +190,7 @@ class AssetSearch extends Component {
                             <BarLoader
                                 size={800}
                                 color={'red'}
-                                loading={this.props.data.loading}
+                                loading={this.state.searching}
                             />
                         </div>
                     </Col>
