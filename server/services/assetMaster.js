@@ -108,6 +108,18 @@ function update(assetMaster) {
     });
 }
 
+function clearComponents(masterId) {
+    return new Promise((resolve, reject) => {
+        AssetMasterModel.clearComponents(masterId)
+            .then(result => {
+                resolve(result);
+            })
+            .catch(err => {
+                reject(err);
+            });
+    });
+}
+
 function setComponentMaster(componentId, masterId) {
     return new Promise((resolve, reject) => {
         AssetMasterModel.setComponentMaster(componentId, masterId)
@@ -121,4 +133,4 @@ function setComponentMaster(componentId, masterId) {
 }
 
 
-module.exports = { hierarchyTypes, assetClasses, find, create, findById, update, deleteAsset, findByHierarchyTypeId, setComponentMaster };
+module.exports = { hierarchyTypes, assetClasses, find, create, findById, update, deleteAsset, findByHierarchyTypeId, setComponentMaster, clearComponents };

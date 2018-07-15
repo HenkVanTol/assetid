@@ -10,11 +10,13 @@ import swal from 'sweetalert2';
 import findByHierarchyTypeId from '../queries/AssetMasterByHierarchyTypeId';
 import findByIdNameOnly from '../queries/AssetMasterByIdNameOnly';
 import setComponentMaster from '../mutations/SetComponentMaster';
+import clearComponents from '../mutations/ClearComponents';
 import toastr from 'toastr';
+import { BarLoader, RingLoader } from 'react-spinners';
 
 const componentHierarchyType = 2;
 
-let state = { name: null, description: null, hierarchyTypeId: null, errors: [], dataSource: [], selectedComponents: [], masterName: null, selectedRowKeys: [] };
+let state = { name: null, description: null, hierarchyTypeId: null, errors: [], dataSource: [], selectedComponents: [], masterName: null, selectedRowKeys: [], mutationLoading: false };
 
 class ManageComponents extends Component {
 
@@ -106,21 +108,41 @@ class ManageComponents extends Component {
     }
     save() {
         console.log("SELECTED COMPONENTS:", this.state.selectedRowKeys);
-        this.state.selectedRowKeys.forEach(key => {
-            console.log("KEY: ", key);
-            this.props.client.mutate({
-                mutation: setComponentMaster,
-                variables: {
-                    componentId: key,
-                    masterId: this.props.params.id
-                }
-            }).then(() => {
-                toastr.success('Components Updated', 'Manage Components', { timeOut: 1000 });
-            }).catch(res => {
-                const errors = res.graphQLErrors.map(error => error.message);
-                this.setState({ errors });
-            });
-        })
+        this.setState({ mutationLoading: true });
+        this.props.client.mutate({
+            mutation: clearComponents,
+            variables: {
+                masterId: this.props.params.id
+            }
+        }).then(() => {
+            let i = 0;
+            //hack
+            let temp = this.state.selectedRowKeys;
+            temp.push(-1);
+            this.setState({ selectedRowKeys: temp });
+            this.state.selectedRowKeys.forEach(key => {
+                console.log("KEY: ", key);
+                this.props.client.mutate({
+                    mutation: setComponentMaster,
+                    variables: {
+                        componentId: key,
+                        masterId: this.props.params.id
+                    }
+                }).then(() => {
+                    i++;
+                    if (i == this.state.selectedRowKeys.length) {
+                        this.setState({ mutationLoading: false });
+                        toastr.success('Components Updated', 'Manage Components', { timeOut: 1000 });
+                    }
+                }).catch(res => {
+                    const errors = res.graphQLErrors.map(error => error.message);
+                    this.setState({ errors });
+                });
+            })
+        }).catch(res => {
+            const errors = res.graphQLErrors.map(error => error.message);
+            this.setState({ errors });
+        });
     }
     render() {
         const formItemLayout = {
@@ -153,41 +175,67 @@ class ManageComponents extends Component {
             selectedRowKeys,
             onChange: this.onSelectChange,
         };
-        return (
-            <div>
-                <h2>Manage Components for: {this.state.masterName}</h2>
-                <Row>
-                    <br>
-                    </br>
-                </Row>
-                <Row>
-                    <Col>
-                        <Table pagination={{ pageSize: 10 }}
-                            rowSelection={rowSelection}
-                            dataSource={this.state.dataSource}
-                            columns={this.columns}
-                            rowKey={record => record.id} />
-                    </Col>
-                </Row>
-                {/* <Row>
+        if (this.props.data.loading) {
+            return (
+                <div className='center-div'>
+                    <div className='sweet-loading' >
+                        <RingLoader
+                            size={120}
+                            color={'red'}
+                            loading={this.props.data.loading}
+                        />
+                    </div>
+                </div>
+            )
+        }
+        else {
+            return (
+                <div>
+                    <h2>Manage Components for: {this.state.masterName}</h2>
+                    <Row>
+                        <br>
+                        </br>
+                    </Row>
+                    <Row>
+                        <Col>
+                            <Table pagination={{ pageSize: 10 }}
+                                rowSelection={rowSelection}
+                                dataSource={this.state.dataSource}
+                                columns={this.columns}
+                                rowKey={record => record.id} />
+                        </Col>
+                    </Row>
+                    {/* <Row>
                     <br>
                     </br>
                 </Row> */}
-                <Row>
-                    <Col {...colLayout}>
-                        {/* <Col {...colLayout} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}> */}
-                        <FormItem label=" " colon={false} {...formItemLayout}>
-                            <Button type="primary" size="large" onClick={() => this.save()}>Save</Button>
-                        </FormItem>
-                    </Col>
-                </Row>
-                <Row>
-                    <div className="errors">
-                        {this.state.errors.map(error => <div key={error}>{error}</div>)}
-                    </div>
-                </Row>
-            </div>
-        );
+                    <Row>
+                        <Col {...colLayout}>
+                            {/* <Col {...colLayout} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}> */}
+                            <FormItem label=" " colon={false} {...formItemLayout}>
+                                <Button type="primary" size="large" onClick={() => this.save()}>Save</Button>
+                            </FormItem>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col {...colLayout}>
+                            <div className='sweet-loading center-div-horizontal' >
+                                <BarLoader
+                                    size={800}
+                                    color={'red'}
+                                    loading={this.state.mutationLoading}
+                                />
+                            </div>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <div className="errors">
+                            {this.state.errors.map(error => <div key={error}>{error}</div>)}
+                        </div>
+                    </Row>
+                </div>
+            );
+        }
     }
 }
 

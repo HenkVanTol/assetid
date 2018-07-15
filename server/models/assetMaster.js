@@ -181,6 +181,24 @@ function update(assetMaster) {
     });
 }
 
+function clearComponents(masterId) {
+    console.log("IN CLEARCOMPONENTS");
+    return new Promise((resolve, reject) => {
+        let values = [
+            masterId
+        ];
+        console.log("VALUES: ", values);
+        db.get().query("update assetMaster set masterId = null where masterid = ?", masterId, function (err, result) {
+            if (err) {
+                reject(err);
+            }
+            else {
+                resolve({ id: masterId });
+            }
+        })
+    });
+}
+
 function setComponentMaster(componentId, masterId) {
     console.log("IN SETCOMPONENTMASTER");
     return new Promise((resolve, reject) => {
@@ -190,17 +208,16 @@ function setComponentMaster(componentId, masterId) {
         ];
         console.log("VALUES: ", values);
         db.get().query(`update assetMaster 
-                        set masterId = ?
-                        where Id = ?`,
+                                set masterId = ?
+                                where Id = ?`,
             values, function (err, result) {
-                if (err) 
-                {
+                if (err) {
                     console.log("SETCOMPONENTMASTER ERROR: ", err);
                     reject(err);
                 }
-                resolve({id: componentId});
+                resolve({ id: componentId });
             });
     });
 }
 
-module.exports = { hierarchyTypes, assetClasses, find, create, findById, update, deleteAsset, findByHierarchyTypeId, setComponentMaster };
+module.exports = { hierarchyTypes, assetClasses, find, create, findById, update, deleteAsset, findByHierarchyTypeId, setComponentMaster, clearComponents };

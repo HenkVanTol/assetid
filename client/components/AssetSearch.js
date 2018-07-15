@@ -7,6 +7,7 @@ const FormItem = Form.Item;
 import { Link } from 'react-router';
 import moment from 'moment';
 import swal from 'sweetalert2';
+import { BarLoader } from 'react-spinners';
 
 const masterHierarchyType = 1;
 
@@ -179,6 +180,17 @@ class AssetSearch extends Component {
                 <Row>
                     <br>
                     </br>
+                </Row>
+                <Row>
+                    <Col {...colLayout}>
+                        <div className='sweet-loading center-div-horizontal' >
+                            <BarLoader
+                                size={800}
+                                color={'red'}
+                                loading={this.props.data.loading}
+                            />
+                        </div>
+                    </Col>
                 </Row>
                 <Row>
                     <div className="errors">
