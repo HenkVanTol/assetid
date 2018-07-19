@@ -19,10 +19,12 @@ const RootQueryType = new GraphQLObjectType({
       type: new GraphQLList(AssetMasterType),
       args: {
         name: { type: GraphQLString },
-        description: { type: GraphQLString }
+        description: { type: GraphQLString },
+        classId: { type: GraphQLInt },
+        serial: { type: GraphQLString }
       },
       resolve(parentValue, args) {
-        return AssetMasterService.find(args.name, args.description);
+        return AssetMasterService.find(args.name, args.description, args.classId, args.serial);
       }
     },
     assetMasterById: {

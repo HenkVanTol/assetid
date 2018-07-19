@@ -22,16 +22,19 @@ function assetClasses() {
     });
 }
 
-function find(name, description) {
+function find(name, description, classId, serial) {
     if (name == "") name = null;
     if (description == "") description = null;
-    let values = ['%' + name + '%', '%' + description + '%'];
+    if (serial == "") serial = null;
+    let values = ['%' + name + '%', '%' + description + '%', '%' + serial + '%', classId];
     console.log("values: ", values);
     return new Promise(function (resolve, reject) {
-        db.get().query(`select * from assetMaster where name like ? or description like ?`, values, function (err, rows) {
+        db.get().query(`select * from assetMaster where name like ? or description like ? or serial like ? or classId = ?`, values, function (err, rows) {
             if (err) {
+                console.log("ERROR ON SEARCH: ", err);
                 return reject(err);
             }
+            console.log("ROWS: ", rows);
             resolve(rows);
         });
     });

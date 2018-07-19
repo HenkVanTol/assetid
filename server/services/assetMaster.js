@@ -24,9 +24,9 @@ function assetClasses() {
     });
 }
 
-function find(name, description) {
+function find(name, description, classId, serial) {
     return new Promise((resolve, reject) => {
-        AssetMasterModel.find(name, description)
+        AssetMasterModel.find(name, description, classId, serial)
             .then(results => {
                 resolve(results);
             })

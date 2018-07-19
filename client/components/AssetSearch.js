@@ -2,16 +2,28 @@ import React, { Component } from 'react';
 import { withApollo, graphql } from 'react-apollo';
 import query from '../queries/AssetMaster';
 import deleteAsset from '../mutations/DeleteAsset';
-import { Form, Row, Col, Input, Button, Table } from 'antd';
+import { Form, Row, Col, Input, Button, Table, Select } from 'antd';
 const FormItem = Form.Item;
+const Option = Select.Option;
 import { Link } from 'react-router';
 import moment from 'moment';
 import swal from 'sweetalert2';
 import { BarLoader } from 'react-spinners';
+import assetClasses from '../queries/AssetClasses';
 
 const masterHierarchyType = 1;
 
-let state = { name: null, description: null, hierarchyTypeId: null, errors: [], dataSource: [], searching: false };
+let state = {
+    name: null,
+    description: null,
+    hierarchyTypeId: null,
+    errors: [],
+    dataSource: [],
+    searching: false,
+    classId: null,
+    serial: null,
+    assetClasses: []
+};
 
 class AssetSearch extends Component {
 
@@ -100,11 +112,11 @@ class AssetSearch extends Component {
     }
     search() {
         this.setState({ searching: true });
-        let { name, description } = this.state;
+        let { name, description, classId, serial } = this.state;
 
         this.props.client.query({
             query,
-            variables: { name, description },
+            variables: { name, description, classId, serial },
             options: {
                 fetchPolicy: 'network-only'
             }
@@ -116,9 +128,20 @@ class AssetSearch extends Component {
     }
     componentDidMount() {
         console.log("componentDidMount");
+        this.props.client.query({
+            query: assetClasses
+        }).then((result) => {
+            console.log("FINISHED LOOKUP QUERY");
+            let lookups = result.data.AssetLookups;
+            if (lookups) {
+                this.setState({ assetClasses: lookups.AssetClasses });
+            }
+        });
         this.setState(prevState => ({
             name: prevState.name,
             description: prevState.description,
+            classId: prevState.classId,
+            serial: prevState.serial,
             hierarchyTypeId: prevState.hierarchyTypeId
         }));
     }
@@ -126,6 +149,16 @@ class AssetSearch extends Component {
         console.log("componentWillUnmount");
         // Remember state for the next mount
         state = this.state;
+    }
+    renderAssetClasses() {
+        if (!this.props.data.loading) {
+            //console.log("assetClasses in render(): ", this.state.assetClasses);
+            return (
+                this.state.assetClasses.map(assetClass => {
+                    return <Option key={assetClass.classid} value={assetClass.classid}>{assetClass.description}</Option>;
+                })
+            );
+        }
     }
     render() {
         const formItemLayout = {
@@ -154,57 +187,79 @@ class AssetSearch extends Component {
         return (
             <div>
                 <h2>Search Assets</h2>
-                <Row>
-                    <Col {...colLayout}>
-                        <FormItem label="Description" {...formItemLayout}>
-                            {
-                                <Input value={this.state.description} onChange={e => this.setState({ description: e.target.value })} />
-                            }
-                        </FormItem>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col {...colLayout}>
-                        <FormItem label="Name" {...formItemLayout}>
-                            {
-                                <Input value={this.state.name} onChange={e => this.setState({ name: e.target.value })} />
-                            }
-                        </FormItem>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col {...colLayout}>
-                        {/* <Col {...colLayout} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}> */}
-                        <FormItem label=" " colon={false} {...formItemLayout}>
-                            <Button type="primary" size="large" onClick={() => this.search()}>Search</Button>
-                        </FormItem>
-                    </Col>
-                </Row>
-                <Row>
-                    <br>
-                    </br>
-                </Row>
-                <Row>
-                    <Col {...colLayout}>
-                        <div className='sweet-loading center-div-horizontal' >
-                            <BarLoader
-                                size={800}
-                                color={'red'}
-                                loading={this.state.searching}
-                            />
+                <Form className="ant-advanced-search-form">
+                    <Row>
+                        <Col {...colLayout}>
+                            <FormItem label="Description" {...formItemLayout}>
+                                {
+                                    <Input value={this.state.description} onChange={e => this.setState({ description: e.target.value })} />
+                                }
+                            </FormItem>
+                        </Col>
+                        <Col {...colLayout}>
+                            <FormItem label="Name" {...formItemLayout}>
+                                {
+                                    <Input value={this.state.name} onChange={e => this.setState({ name: e.target.value })} />
+                                }
+                            </FormItem>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col {...colLayout}>
+                            <FormItem label="Class" {...formItemLayout}>
+                                {
+                                    <Select value={this.state.classId} onChange={(value) => this.setState({ classId: value })} >
+                                        {this.renderAssetClasses()}
+                                    </Select>
+                                }
+                            </FormItem>
+                        </Col>
+                        <Col {...colLayout}>
+                            <FormItem label="Serial" {...formItemLayout}>
+                                {
+                                    <Input value={this.state.serial} onChange={e => this.setState({ serial: e.target.value })} />
+                                }
+                            </FormItem>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col {...colLayout}>
+                            {/* <Col {...colLayout} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}> */}
+                            <FormItem label=" " colon={false} {...formItemLayout}>
+                                <Button type="primary" size="large" onClick={() => this.search()}>Search</Button>
+                            </FormItem>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <br>
+                        </br>
+                    </Row>
+                    <Row>
+                        <Col {...colLayout}>
+                            <div className='sweet-loading center-div-horizontal' >
+                                <BarLoader
+                                    size={800}
+                                    color={'red'}
+                                    loading={this.state.searching}
+                                />
+                            </div>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <div className="errors">
+                            {this.state.errors.map(error => <div key={error}>{error}</div>)}
                         </div>
-                    </Col>
-                </Row>
-                <Row>
-                    <div className="errors">
-                        {this.state.errors.map(error => <div key={error}>{error}</div>)}
-                    </div>
-                </Row>
-                <Row>
-                    <Col>
-                        <Table pagination={{ pageSize: 5 }} rowSelection={this.rowSelection} dataSource={this.state.dataSource} columns={this.columns} rowKey={record => record.id} />
-                    </Col>
-                </Row>
+                    </Row>
+                    <Row>
+                        <br>
+                        </br>
+                    </Row>
+                    <Row>
+                        <Col>
+                            <Table pagination={{ pageSize: 5 }} rowSelection={this.rowSelection} dataSource={this.state.dataSource} columns={this.columns} rowKey={record => record.id} />
+                        </Col>
+                    </Row>
+                </Form>
             </div>
         );
     }
