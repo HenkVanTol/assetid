@@ -104,6 +104,9 @@ class AssetCreate extends Component {
             let lookups = result.data.AssetLookups;
             if (lookups) {
                 this.mapState(lookups);
+                console.log("Hierarchy Types: ", this.state.hierarchyTypes);
+                console.log("State HierarchyTypeID: ", this.state.hierarchyTypeId);
+                console.log("FILTERED: ", this.state.hierarchyTypes.filter((e) => e.id == this.state.hierarchyTypeId)[0].description);
             }
         });
         this.props.client.query({
@@ -349,25 +352,30 @@ class AssetCreate extends Component {
                         </Row> */}
                         <Row>
                             <Col {...colLayout}>
-                                <FormItem label="Hierarchy Type" {...formItemLayout}>
-                                    {
-                                        getFieldDecorator('hierarchyTypeId', {
-                                            initialValue: this.state.hierarchyTypeId,
-                                            valuePropName: 'value',
-                                            rules: [{
-                                                required: true,
-                                                message: 'Hierarchy Type is required',
-                                            }],
-                                        })(
-                                            // <Select onChange={(value) => this.setState({ hierarchyTypeId: value })} >
-                                            //     {this.renderHierarchyTypes()}
-                                            // </Select>
-                                            <Select onChange={(value) => this.loadMasters(value)} >
-                                                {this.renderHierarchyTypes()}
-                                            </Select>
-                                        )
-                                    }
-                                </FormItem>
+                                {(this.state.edit && this.state.hierarchyTypes.length > 0) ?
+                                    <FormItem label="Hierarchy Type" {...formItemLayout}>
+                                        <label>{this.state.hierarchyTypes.filter(e => e.id == this.state.hierarchyTypeId)[0].description}</label>
+                                    </FormItem> :
+                                    <FormItem label="Hierarchy Type" {...formItemLayout}>
+                                        {
+                                            getFieldDecorator('hierarchyTypeId', {
+                                                initialValue: this.state.hierarchyTypeId,
+                                                valuePropName: 'value',
+                                                rules: [{
+                                                    required: true,
+                                                    message: 'Hierarchy Type is required',
+                                                }],
+                                            })(
+                                                // <Select onChange={(value) => this.setState({ hierarchyTypeId: value })} >
+                                                //     {this.renderHierarchyTypes()}
+                                                // </Select>
+                                                <Select onChange={(value) => this.loadMasters(value)} >
+                                                    {this.renderHierarchyTypes()}
+                                                </Select>
+                                            )
+                                        }
+                                    </FormItem>
+                                }
                             </Col>
                             <Col {...colLayout}>
                                 <FormItem label="Class" {...formItemLayout}>
@@ -505,7 +513,7 @@ class AssetCreate extends Component {
                         <Row>
                             <Col {...colLayout}>
                                 <FormItem label="Purchase Order" {...formItemLayout}>
-                                    <Input value={this.state.purchaseOrderNumber} onChange={e => this.setState({ purchaseOrderNumber: e.target.value })} />
+                                    <Input disabled={true} value={this.state.purchaseOrderNumber} onChange={e => this.setState({ purchaseOrderNumber: e.target.value })} />
                                 </FormItem>
                             </Col>
                             <Col {...colLayout}>
