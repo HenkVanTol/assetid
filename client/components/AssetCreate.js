@@ -95,6 +95,9 @@ class AssetCreate extends Component {
                 }
             });
         }
+        else {
+            this.setState({ readOnly: false });
+        }
         console.log("state in did mount: ", this.state);
         this.props.client.query({
             query: findLookups,
@@ -344,7 +347,8 @@ class AssetCreate extends Component {
             return (
                 <div>
                     {
-                        (this.state.edit) ? <h2>Edit Asset</h2> : <h2>Create Asset</h2>
+                        (this.state.readOnly) ? <h2>View Asset</h2> :
+                            ((this.state.edit) ? <h2>Edit Asset</h2> : <h2>Create Asset</h2>)
                     }
                     <Form onSubmit={this.onSubmit.bind(this)} className="ant-advanced-search-form">
                         {/* <Row>
@@ -564,12 +568,12 @@ class AssetCreate extends Component {
                                         <label>{this.state.purchaseOrderNumber}</label>
                                     </FormItem> :
                                     <FormItem label="Purchase Order" {...formItemLayout}>
-                                        <Input disabled={true} value={this.state.purchaseOrderNumber} onChange={e => this.setState({ purchaseOrderNumber: e.target.value })} />
+                                        <Input value={this.state.purchaseOrderNumber} onChange={e => this.setState({ purchaseOrderNumber: e.target.value })} />
                                     </FormItem>
                                 }
                             </Col>
                             <Col {...colLayout}>
-                                {(this.state.edit && this.state.readOnly && this.state.assetMasters.length > 0) ?
+                                {(this.state.edit && this.state.readOnly && this.state.assetMasters.length > 0 && this.state.hierarchyTypeId == componentHierarchyType) ?
                                     <FormItem label="Master" {...formItemLayout}>
                                         <label>{this.state.assetMasters.filter(e => e.id == this.state.masterId)[0].description}</label>
                                     </FormItem> :
@@ -600,6 +604,8 @@ class AssetCreate extends Component {
                                 {/* <Col {...colLayout} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}> */}
                                 <FormItem label=" " colon={false} {...formItemLayout}>
                                     <Button type="primary" size="large" htmlType="submit">Submit</Button>
+                                    {/* <Button style={{display: this.state.readOnly ? 'block': 'none'}} type="primary" size="large" onClick={() => this.setState({readOnly: false})}>Edit</Button> */}
+                                    <Button type="primary" size="large" onClick={() => this.setState(prevState => ({ readOnly: !prevState.readOnly }))}>Edit</Button>
                                 </FormItem>
                             </Col>
                         </Row>
