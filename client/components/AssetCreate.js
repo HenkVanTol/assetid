@@ -603,9 +603,12 @@ class AssetCreate extends Component {
                             <Col {...colLayout}>
                                 {/* <Col {...colLayout} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}> */}
                                 <FormItem label=" " colon={false} {...formItemLayout}>
-                                    <Button type="primary" size="large" htmlType="submit">Submit</Button>
-                                    {/* <Button style={{display: this.state.readOnly ? 'block': 'none'}} type="primary" size="large" onClick={() => this.setState({readOnly: false})}>Edit</Button> */}
-                                    <Button type="primary" size="large" onClick={() => this.setState(prevState => ({ readOnly: !prevState.readOnly }))}>Edit</Button>
+                                    {/* <div style={{ justifyContent: 'space-between' }}> */}
+                                        <Button type="primary" size="large" htmlType="submit">Submit</Button>
+                                        {" "}
+                                        {/* <Button style={{display: this.state.readOnly ? 'block': 'none'}} type="primary" size="large" onClick={() => this.setState({readOnly: false})}>Edit</Button> */}
+                                        <Button type="primary" size="large" onClick={() => this.setState(prevState => ({ readOnly: !prevState.readOnly }))}>{this.state.readOnly ? "Edit" : "Cancel"}</Button>
+                                    {/* </div> */}
                                 </FormItem>
                             </Col>
                         </Row>
