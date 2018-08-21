@@ -11,6 +11,7 @@ import userQuery from '../queries/CurrentUser';
 import findByHierarchyTypeId from '../queries/AssetMasterByHierarchyTypeId';
 import findById from '../queries/AssetMasterById';
 
+import { Link } from 'react-router';
 import toastr from 'toastr';
 import '../../node_modules/toastr/build/toastr.css';
 import { RingLoader } from 'react-spinners';
@@ -75,6 +76,11 @@ class AssetCreate extends Component {
                 edit: false,
                 readOnly: true
             };
+        }
+    }
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.params.id != this.props.params.id) {
+            window.location.reload(); //find a better way
         }
     }
     componentDidMount() {
@@ -346,10 +352,18 @@ class AssetCreate extends Component {
             };
             return (
                 <div>
-                    {
-                        (this.state.readOnly) ? <h2>View Asset</h2> :
-                            ((this.state.edit) ? <h2>Edit Asset</h2> : <h2>Create Asset</h2>)
-                    }
+                    <div>
+                        {
+                            (this.state.readOnly) ? <h2 style={{ display: 'inline-block' }}>View Asset</h2> :
+                                ((this.state.edit) ? <h2 style={{ display: 'inline-block' }}>Edit Asset</h2> : <h2 style={{ display: 'inline-block' }}>Create Asset</h2>)
+                        }
+                        {" "}
+                        {
+                            (this.state.hierarchyTypeId == componentHierarchyType) ?
+                                <Link to={`/assetcreate/${this.state.masterId}`}>View Master</Link> :
+                                <div></div>
+                        }
+                    </div>
                     <Form onSubmit={this.onSubmit.bind(this)} className="ant-advanced-search-form">
                         {/* <Row>
                             <FormItemLabel value="Contract: " />
@@ -384,7 +398,7 @@ class AssetCreate extends Component {
                                 }
                             </Col>
                             <Col {...colLayout}>
-                                {(this.state.edit && this.state.readOnly && this.state.assetClasses.length > 0) ?
+                                {(this.state.edit && this.state.readOnly && this.state.assetClasses.length > 0 && this.state.classId > 0) ?
                                     <FormItem label="Class" {...formItemLayout}>
                                         <label>{this.state.assetClasses.filter(e => e.classid == this.state.classId)[0].description}</label>
                                     </FormItem> :
@@ -573,7 +587,8 @@ class AssetCreate extends Component {
                                 }
                             </Col>
                             <Col {...colLayout}>
-                                {(this.state.edit && this.state.readOnly && this.state.assetMasters.length > 0 && this.state.hierarchyTypeId == componentHierarchyType) ?
+                                {(this.state.edit && this.state.readOnly && this.state.assetMasters.length > 0 && this.state.hierarchyTypeId == componentHierarchyType && this.state.masterId > 0
+                                    && this.state.assetMasters.filter(e => e.id == this.state.masterId)[0] != null) ?
                                     <FormItem label="Master" {...formItemLayout}>
                                         <label>{this.state.assetMasters.filter(e => e.id == this.state.masterId)[0].description}</label>
                                     </FormItem> :
@@ -604,10 +619,10 @@ class AssetCreate extends Component {
                                 {/* <Col {...colLayout} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}> */}
                                 <FormItem label=" " colon={false} {...formItemLayout}>
                                     {/* <div style={{ justifyContent: 'space-between' }}> */}
-                                        <Button type="primary" size="large" htmlType="submit">Submit</Button>
-                                        {" "}
-                                        {/* <Button style={{display: this.state.readOnly ? 'block': 'none'}} type="primary" size="large" onClick={() => this.setState({readOnly: false})}>Edit</Button> */}
-                                        <Button type="primary" size="large" onClick={() => this.setState(prevState => ({ readOnly: !prevState.readOnly }))}>{this.state.readOnly ? "Edit" : "Cancel"}</Button>
+                                    <Button type="primary" size="large" htmlType="submit">Submit</Button>
+                                    {" "}
+                                    {/* <Button style={{display: this.state.readOnly ? 'block': 'none'}} type="primary" size="large" onClick={() => this.setState({readOnly: false})}>Edit</Button> */}
+                                    <Button type="primary" size="large" onClick={() => this.setState(prevState => ({ readOnly: !prevState.readOnly }))}>{this.state.readOnly ? "Edit" : "Cancel"}</Button>
                                     {/* </div> */}
                                 </FormItem>
                             </Col>
