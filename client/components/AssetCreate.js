@@ -398,10 +398,11 @@ class AssetCreate extends Component {
                                 }
                             </Col>
                             <Col {...colLayout}>
-                                {(this.state.edit && this.state.readOnly && this.state.assetClasses.length > 0 && this.state.classId > 0) ?
+                                {(this.state.edit && this.state.readOnly && this.state.assetClasses.length > 0) ?
+                                    (this.state.classId > 0) ?
                                     <FormItem label="Class" {...formItemLayout}>
                                         <label>{this.state.assetClasses.filter(e => e.classid == this.state.classId)[0].description}</label>
-                                    </FormItem> :
+                                    </FormItem> : <FormItem label="Class" {...formItemLayout}></FormItem> :
                                     <FormItem label="Class" {...formItemLayout}>
                                         <Select value={this.state.classId} onChange={(value) => this.setState({ classId: value })} >
                                             {this.renderAssetClasses()}
