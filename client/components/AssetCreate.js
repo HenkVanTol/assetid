@@ -50,7 +50,7 @@ let state = {
 class AssetCreate extends Component {
     constructor(props) {
         super(props);
-        
+
         this.columns = [{
             title: 'Name',
             dataIndex: 'name',
@@ -695,16 +695,19 @@ class AssetCreate extends Component {
                                 {this.state.errors.map(error => <div key={error}>{error}</div>)}
                             </div>
                         </Row>
-                        <Row>
-                            <h2>Components</h2>
-                            <Col>
-                                <Table pagination={{ pageSize: 10 }}
-                                    // rowSelection={rowSelection}
-                                    dataSource={this.state.components}
-                                    columns={this.columns}
-                                    rowKey={record => record.id} />
-                            </Col>
-                        </Row>
+                        {(this.state.hierarchyTypeId != componentHierarchyType) ?
+                            <Row>
+                                <h2>Components</h2>
+                                <Col>
+                                    <Table pagination={{ pageSize: 10 }}
+                                        // rowSelection={rowSelection}
+                                        dataSource={this.state.components}
+                                        columns={this.columns}
+                                        rowKey={record => record.id} />
+                                </Col>
+                            </Row> :
+                            <div></div>
+                        }
                     </Form>
                     {/* <div>
                         {(this.props.data.loading) ?
