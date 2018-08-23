@@ -591,20 +591,16 @@ class AssetCreate extends Component {
                             </Col>
 
                             <Col {...colLayout}>
-                                {/* in this case we are in readonly mode, looking at an existing asset which is a component */}
                                 {(this.state.edit && this.state.readOnly && this.state.assetMasters.length > 0 && this.state.hierarchyTypeId == componentHierarchyType) 
                                 ?
-                                    {/* we have a master set against the component, display the master in a label */ }
                                     (this.state.masterId > 0) 
                                     ?
                                         <FormItem label="Master" {...formItemLayout}>
                                             <label>{this.state.assetMasters.filter(e => e.id == this.state.masterId)[0].description}</label>
                                         </FormItem> 
-                                    // we don't have a master set against this component, display a blank label 
                                     : 
                                         <FormItem label="Master" {...formItemLayout}></FormItem> 
                                 :
-                                    // we are in editable mode
                                     (!this.state.readOnly) 
                                     ?
                                         <FormItem label="Master" {...formItemLayout}>
@@ -616,20 +612,6 @@ class AssetCreate extends Component {
                                         <FormItem label="Master" {...formItemLayout}></FormItem>
                                 }
                             </Col>
-
-                            {/* <Col {...colLayout}>
-                                {(this.state.edit && this.state.readOnly && this.state.assetMasters.length > 0 && this.state.hierarchyTypeId == componentHierarchyType && this.state.masterId > 0
-                                    && this.state.assetMasters.filter(e => e.id == this.state.masterId)[0] != null) ?
-                                    <FormItem label="Master" {...formItemLayout}>
-                                        <label>{this.state.assetMasters.filter(e => e.id == this.state.masterId)[0].description}</label>
-                                    </FormItem> :
-                                    <FormItem label="Master" {...formItemLayout}>
-                                        <Select disabled={this.state.hierarchyTypeId != componentHierarchyType} value={this.state.masterId} onChange={(value) => this.setState({ masterId: value })} >
-                                            {this.renderMasters()}
-                                        </Select>
-                                    </FormItem>
-                                }
-                            </Col> */}
                         </Row>
                         <br>
                         </br>
