@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { graphql, withApollo } from 'react-apollo';
 import moment from 'moment';
-import { Form, Row, Col, Input, Button, DatePicker, Select, Label } from 'antd';
+import { Form, Row, Col, Input, Button, DatePicker, Select, Label, Table } from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
 import create from '../mutations/CreateAssetMaster';
@@ -16,6 +16,8 @@ import toastr from 'toastr';
 import '../../node_modules/toastr/build/toastr.css';
 import { RingLoader } from 'react-spinners';
 import { BarLoader } from 'react-spinners';
+import AssetComponents from '../components/AssetComponents';
+import findByMasterId from '../queries/AssetMasterByMasterId';
 
 const masterHierarchyType = 1;
 const componentHierarchyType = 2;
@@ -41,12 +43,39 @@ let state = {
     creatorId: null,
     errors: [],
     edit: false,
-    readOnly: true
+    readOnly: true,
+    components: []
 };
 
 class AssetCreate extends Component {
     constructor(props) {
         super(props);
+        
+        this.columns = [{
+            title: 'Name',
+            dataIndex: 'name',
+            key: 'name',
+        }, {
+            title: 'Description',
+            dataIndex: 'description',
+            key: 'description',
+        }, {
+            title: 'Serial',
+            dataIndex: 'serial',
+            key: 'serial',
+        }, {
+            title: 'Registration',
+            dataIndex: 'registration',
+            key: 'registration',
+        }, {
+            title: 'Acquisition Date',
+            dataIndex: 'acquisitionDate',
+            key: 'acquisitionDate',
+            render: (text, record) => (
+                <span>{moment(record.acquisitionDate).format("DD/MM/YYYY")}</span>
+            )
+        }];
+
         console.log("state.edit: ", state.edit);
         console.log("state.readonly: ", state.readOnly);
         console.log("state.masterId: ", state.masterId);
@@ -76,7 +105,8 @@ class AssetCreate extends Component {
                 creatorId: null,
                 errors: [],
                 edit: false,
-                readOnly: true
+                readOnly: true,
+                components: []
             };
         }
     }
@@ -127,6 +157,25 @@ class AssetCreate extends Component {
         }).then((result) => {
             this.setState({ creatorId: result.data.user.id });
         });
+
+        //load components if master
+        this.props.client.query({
+            query: findByMasterId,
+            variables: {
+                masterId: this.props.params.id
+            }
+        }).then((result) => {
+            //console.log("AssetComponents masterId: ", this.props.masterId);
+            console.log("AssetComponents Result: ", result);
+            this.setState({ components: result.data.assetMasterByMasterId });
+            // let previouslySelected = result.data.assetMasterByMasterId.filter((asset) => {
+            //     return asset.masterId == this.props.params.id;
+            // }).map((el) => { return el.id });
+            //this.setState({ selectedComponents: previouslySelected });
+            //this.setState({ selectedRowKeys: previouslySelected });
+            console.log("PREVIOUSLY SELECTED: ", this.state.selectedRowKeys);
+        });
+
         this.loadMasters(this.state.hierarchyTypeId);
         this.setState(prevState => ({
             hierarchyTypeId: prevState.hierarchyTypeId,
@@ -146,7 +195,8 @@ class AssetCreate extends Component {
             hierarchyTypes: prevState.hierarchyTypes,
             assetClasses: prevState.assetClasses,
             assetMasters: prevState.assetMasters,
-            errors: prevState.errors
+            errors: prevState.errors,
+            components: prevState.components
         }));
     }
     componentWillUnmount() {
@@ -591,24 +641,24 @@ class AssetCreate extends Component {
                             </Col>
 
                             <Col {...colLayout}>
-                                {(this.state.edit && this.state.readOnly && this.state.assetMasters.length > 0 && this.state.hierarchyTypeId == componentHierarchyType) 
-                                ?
-                                    (this.state.masterId > 0) 
+                                {(this.state.edit && this.state.readOnly && this.state.assetMasters.length > 0 && this.state.hierarchyTypeId == componentHierarchyType)
                                     ?
+                                    (this.state.masterId > 0)
+                                        ?
                                         <FormItem label="Master" {...formItemLayout}>
                                             <label>{this.state.assetMasters.filter(e => e.id == this.state.masterId)[0].description}</label>
-                                        </FormItem> 
-                                    : 
-                                        <FormItem label="Master" {...formItemLayout}></FormItem> 
-                                :
-                                    (!this.state.readOnly) 
-                                    ?
+                                        </FormItem>
+                                        :
+                                        <FormItem label="Master" {...formItemLayout}></FormItem>
+                                    :
+                                    (!this.state.readOnly)
+                                        ?
                                         <FormItem label="Master" {...formItemLayout}>
                                             <Select disabled={this.state.hierarchyTypeId != componentHierarchyType} value={this.state.masterId} onChange={(value) => this.setState({ masterId: value })} >
                                                 {this.renderMasters()}
                                             </Select>
-                                        </FormItem> 
-                                    : 
+                                        </FormItem>
+                                        :
                                         <FormItem label="Master" {...formItemLayout}></FormItem>
                                 }
                             </Col>
@@ -645,7 +695,23 @@ class AssetCreate extends Component {
                                 {this.state.errors.map(error => <div key={error}>{error}</div>)}
                             </div>
                         </Row>
+                        <Row>
+                            <h2>Components</h2>
+                            <Col>
+                                <Table pagination={{ pageSize: 10 }}
+                                    // rowSelection={rowSelection}
+                                    dataSource={this.state.components}
+                                    columns={this.columns}
+                                    rowKey={record => record.id} />
+                            </Col>
+                        </Row>
                     </Form>
+                    {/* <div>
+                        {(this.props.data.loading) ?
+                            <AssetComponents components={this.state.components} masterId={this.state.id} />
+                            : <div></div>
+                        }
+                    </div> */}
                 </div>
             );
         }

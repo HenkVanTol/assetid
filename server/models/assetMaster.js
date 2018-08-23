@@ -49,6 +49,15 @@ function findById(id) {
     });
 }
 
+function findByMasterId(masterId) {
+    return new Promise(function (resolve, reject) {
+        db.get().query('select * from assetMaster where masterId = ?', masterId, function (err, rows) {
+            if (err) return reject(err);
+            resolve(rows);
+        });
+    });
+}
+
 function findByHierarchyTypeId(hierarchyTypeId) {
     return new Promise(function (resolve, reject) {
         db.get().query('select * from assetMaster where hierarchyTypeId = ?', hierarchyTypeId, function (err, rows) {
@@ -223,4 +232,4 @@ function setComponentMaster(componentId, masterId) {
     });
 }
 
-module.exports = { hierarchyTypes, assetClasses, find, create, findById, update, deleteAsset, findByHierarchyTypeId, setComponentMaster, clearComponents };
+module.exports = { hierarchyTypes, assetClasses, find, create, findById, update, deleteAsset, findByHierarchyTypeId, setComponentMaster, clearComponents, findByMasterId };

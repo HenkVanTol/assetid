@@ -45,6 +45,15 @@ const RootQueryType = new GraphQLObjectType({
         return AssetMasterService.findByHierarchyTypeId(args.hierarchyTypeId);
       }
     },
+    assetMasterByMasterId: {
+      type: new GraphQLList(AssetMasterType),
+      args: {
+        masterId: { type: GraphQLInt }
+      },
+      resolve(parentValue, args) {
+        return AssetMasterService.findByMasterId(args.masterId);
+      }
+    },
     AssetLookups: {
       type: AssetLookupType,
       resolve(parentValue, args) {
