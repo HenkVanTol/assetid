@@ -62,14 +62,14 @@ class AssetSearch extends Component {
                 <Link to={`/assetCreate/${record.id}`}>View</Link>
             )
         },
-        {
-            render: (text, record) => {
-                if (record.hierarchyTypeId == masterHierarchyType)
-                    return (
-                        <Link to={`/components/${record.id}`}>Components</Link>
-                    )
-            }
-        },
+        // {
+        //     render: (text, record) => {
+        //         if (record.hierarchyTypeId == masterHierarchyType)
+        //             return (
+        //                 <Link to={`/components/${record.id}`}>Components</Link>
+        //             )
+        //     }
+        // },
         {
             render: (text, record) => (
                 <Button onClick={() => this.delete(record.id)}>Delete</Button>
