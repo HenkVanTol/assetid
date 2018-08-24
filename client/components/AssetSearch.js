@@ -43,11 +43,13 @@ class AssetSearch extends Component {
             title: 'Serial',
             dataIndex: 'serial',
             key: 'serial',
-        }, {
-            title: 'Registration',
-            dataIndex: 'registration',
-            key: 'registration',
-        }, {
+        },
+        // {
+        //     title: 'Registration',
+        //     dataIndex: 'registration',
+        //     key: 'registration',
+        // }, 
+        {
             title: 'Acquisition Date',
             dataIndex: 'acquisitionDate',
             key: 'acquisitionDate',
@@ -57,7 +59,7 @@ class AssetSearch extends Component {
         },
         {
             render: (text, record) => (
-                <Link to={`/assetCreate/${record.id}`}>Edit</Link>
+                <Link to={`/assetCreate/${record.id}`}>View</Link>
             )
         },
         {

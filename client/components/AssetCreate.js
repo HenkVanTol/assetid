@@ -16,7 +16,6 @@ import toastr from 'toastr';
 import '../../node_modules/toastr/build/toastr.css';
 import { RingLoader } from 'react-spinners';
 import { BarLoader } from 'react-spinners';
-import AssetComponents from '../components/AssetComponents';
 import findByMasterId from '../queries/AssetMasterByMasterId';
 
 const masterHierarchyType = 1;
@@ -63,16 +62,23 @@ class AssetCreate extends Component {
             title: 'Serial',
             dataIndex: 'serial',
             key: 'serial',
-        }, {
-            title: 'Registration',
-            dataIndex: 'registration',
-            key: 'registration',
-        }, {
+        },
+        // {
+        //     title: 'Registration',
+        //     dataIndex: 'registration',
+        //     key: 'registration',
+        // }, 
+        {
             title: 'Acquisition Date',
             dataIndex: 'acquisitionDate',
             key: 'acquisitionDate',
             render: (text, record) => (
                 <span>{moment(record.acquisitionDate).format("DD/MM/YYYY")}</span>
+            )
+        },
+        {
+            render: (text, record) => (
+                <Link to={`/assetCreate/${record.id}`}>View</Link>
             )
         }];
 
@@ -111,11 +117,16 @@ class AssetCreate extends Component {
         }
     }
     componentWillReceiveProps(nextProps) {
-        if (nextProps.params.id != this.props.params.id) {
-            window.location.reload(); //find a better way
+        console.log("here11");
+        if (nextProps.params.id != this.state.id) {
+            console.log("here22");
+            this.load();
         }
     }
     componentDidMount() {
+        this.load();
+    }
+    load() {
         //edit existing
         if (this.props.params.id) {
             this.setState({ edit: true });
