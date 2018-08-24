@@ -706,7 +706,7 @@ class AssetCreate extends Component {
                                 {this.state.errors.map(error => <div key={error}>{error}</div>)}
                             </div>
                         </Row>
-                        {(this.state.hierarchyTypeId != componentHierarchyType) ?
+                        {(this.state.hierarchyTypeId && this.state.hierarchyTypeId != componentHierarchyType) ?
                             <Row>
                                 <h2>Components</h2>
                                 <Col>
