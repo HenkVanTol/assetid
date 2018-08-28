@@ -17,6 +17,7 @@ import '../../node_modules/toastr/build/toastr.css';
 import { RingLoader } from 'react-spinners';
 import { BarLoader } from 'react-spinners';
 import findByMasterId from '../queries/AssetMasterByMasterId';
+import FormItemCombo from '../components/common/FormItemCombo';
 
 const masterHierarchyType = 1;
 const componentHierarchyType = 2;
@@ -117,9 +118,7 @@ class AssetCreate extends Component {
         }
     }
     componentWillReceiveProps(nextProps) {
-        console.log("here11");
         if (nextProps.params.id != this.state.id) {
-            console.log("here22");
             this.load();
         }
     }
@@ -363,6 +362,7 @@ class AssetCreate extends Component {
         }
     }
     loadMasters(selectedHierarchyTypeId) {
+        console.log("VALUE FOR LOADMASTERS: ", selectedHierarchyTypeId);
         this.setState({ hierarchyTypeId: selectedHierarchyTypeId, masterId: null });
         this.props.client.query({
             query: findByHierarchyTypeId,
@@ -434,7 +434,24 @@ class AssetCreate extends Component {
                                 renderOptions={this.renderContracts.bind(this)} />
                         </Row> */}
                         <Row>
-                            <Col {...colLayout}>
+                            <FormItemCombo
+                                colLayout={colLayout}
+                                edit={this.state.edit}
+                                readOnly={this.state.readOnly}
+                                options={this.state.hierarchyTypes}
+                                formItemLayout={formItemLayout}
+                                idValue={this.state.hierarchyTypeId}
+                                labelValue={"Hierarchy Type"}
+                                valueFieldName={"hierarchyTypeId"}
+                                valuePropName={"value"}
+                                required={true}
+                                requiredMessage={"Hierarchy Type is required"}
+                                onChange={this.loadMasters.bind(this)}
+                                renderOptions={this.renderHierarchyTypes.bind(this)}
+                                descriptionFieldName={"description"}
+                                form={this.props.form}
+                            />
+                            {/* <Col {...colLayout}>
                                 {(this.state.edit && this.state.readOnly && this.state.hierarchyTypes.length > 0) ?
                                     <FormItem label="Hierarchy Type" {...formItemLayout}>
                                         <label>{this.state.hierarchyTypes.filter(e => e.id == this.state.hierarchyTypeId)[0].description}</label>
@@ -459,7 +476,7 @@ class AssetCreate extends Component {
                                         }
                                     </FormItem>
                                 }
-                            </Col>
+                            </Col> */}
                             <Col {...colLayout}>
                                 {(this.state.edit && this.state.readOnly && this.state.assetClasses.length > 0) ?
                                     (this.state.classId > 0) ?

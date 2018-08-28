@@ -1,21 +1,49 @@
 import React, { Component } from 'react';
-import { Row, Col, Input, Form, Select } from 'antd';
+import { Col, Form, Select } from 'antd';
 const FormItem = Form.Item;
 
 class FormItemCombo extends Component {
     render() {
-        const formItemLayout = {
-            wrapperCol: { span: 40 },
-            labelCol: { span: 20 },
-        };
+        let {
+            colLayout,
+            readOnly,
+            edit,
+            options,
+            formItemLayout,
+            idValue,
+            labelValue,
+            valueFieldName,
+            valuePropName,
+            required,
+            requiredMessage,
+            onChange,
+            renderOptions,
+            descriptionFieldName,
+            form
+        } = this.props;
         return (
-            <Col xs={12} sm={12} md={6} lg={6} xl={6}>
-                {/* <FormItem {...formItemLayout}> */}
-                <FormItem>
-                    <Select style={{ width: '100%', marginRight: '8px', marginBottom: '8px' }} value={this.props.value} onChange={this.props.onChange} >
-                        {this.props.renderOptions()}
-                    </Select>
-                </FormItem>
+            <Col {...colLayout}>
+                {(edit && readOnly && options.length > 0) ?
+                    <FormItem label={labelValue} {...formItemLayout}>
+                        <label>{options.filter(e => e.id == idValue)[0][descriptionFieldName]}</label>
+                    </FormItem> :
+                    <FormItem label={labelValue} {...formItemLayout}>
+                        {
+                            form.getFieldDecorator(valueFieldName, {
+                                initialValue: idValue,
+                                valuePropName: valuePropName,
+                                rules: [{
+                                    required: required,
+                                    message: requiredMessage,
+                                }],
+                            })(
+                                <Select onChange={(value) => onChange(value)} >
+                                    {renderOptions()}
+                                </Select>
+                            )
+                        }
+                    </FormItem>
+                }
             </Col>
         );
     }
