@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { graphql, withApollo } from 'react-apollo';
+import { withApollo } from 'react-apollo';
 import moment from 'moment';
-import { Form, Row, Col, Input, Button, DatePicker, Select, Label, Table } from 'antd';
+import { Form, Row, Col, Input, Button, DatePicker, Select, Table } from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
 import create from '../mutations/CreateAssetMaster';
@@ -50,7 +50,7 @@ let state = {
 class AssetCreate extends Component {
     constructor(props) {
         super(props);
-
+        this.setClassId = this.setClassId.bind(this);
         this.columns = [{
             title: 'Name',
             dataIndex: 'name',
@@ -64,29 +64,20 @@ class AssetCreate extends Component {
             dataIndex: 'serial',
             key: 'serial',
         },
-        // {
-        //     title: 'Registration',
-        //     dataIndex: 'registration',
-        //     key: 'registration',
-        // }, 
         {
             title: 'Acquisition Date',
             dataIndex: 'acquisitionDate',
             key: 'acquisitionDate',
-            render: (text, record) => (
+            render: (record) => (
                 <span>{moment(record.acquisitionDate).format("DD/MM/YYYY")}</span>
             )
         },
         {
-            render: (text, record) => (
+            render: (record) => (
                 <Link to={`/assetCreate/${record.id}`}>View</Link>
             )
         }];
 
-        console.log("state.edit: ", state.edit);
-        console.log("state.readonly: ", state.readOnly);
-        console.log("state.masterId: ", state.masterId);
-        console.log("this.props.params.id: ", this.props.params.id);
         if (!state.edit && !(this.props.params.id > 0)) {
             this.state = state;
         }
@@ -153,13 +144,9 @@ class AssetCreate extends Component {
             //     fetchPolicy: 'network-only'
             // }
         }).then((result) => {
-            console.log("FINISHED LOOKUP QUERY");
             let lookups = result.data.AssetLookups;
             if (lookups) {
                 this.mapState(lookups);
-                console.log("Hierarchy Types: ", this.state.hierarchyTypes);
-                console.log("State HierarchyTypeID: ", this.state.hierarchyTypeId);
-                console.log("FILTERED: ", this.state.hierarchyTypes.filter((e) => e.id == this.state.hierarchyTypeId)[0].description);
             }
         });
         this.props.client.query({
@@ -175,15 +162,7 @@ class AssetCreate extends Component {
                 masterId: this.props.params.id
             }
         }).then((result) => {
-            //console.log("AssetComponents masterId: ", this.props.masterId);
-            console.log("AssetComponents Result: ", result);
             this.setState({ components: result.data.assetMasterByMasterId });
-            // let previouslySelected = result.data.assetMasterByMasterId.filter((asset) => {
-            //     return asset.masterId == this.props.params.id;
-            // }).map((el) => { return el.id });
-            //this.setState({ selectedComponents: previouslySelected });
-            //this.setState({ selectedRowKeys: previouslySelected });
-            console.log("PREVIOUSLY SELECTED: ", this.state.selectedRowKeys);
         });
 
         this.loadMasters(this.state.hierarchyTypeId);
@@ -210,12 +189,10 @@ class AssetCreate extends Component {
         }));
     }
     componentWillUnmount() {
-        console.log("componentWillUnmount");
         // Remember state for the next mount
         state = this.state;
     }
     mapAsset(asset) {
-        console.log("asset in mapAsset: ", asset);
         this.setState({
             hierarchyTypeId: asset.hierarchyTypeId,
             masterId: asset.masterId,
@@ -234,7 +211,6 @@ class AssetCreate extends Component {
         });
     }
     mapState(lookups) {
-        console.log("lookups in mapstate: ", lookups);
         this.setState({
             hierarchyTypes: lookups.HierarchyTypes,
             assetClasses: lookups.AssetClasses
@@ -333,7 +309,6 @@ class AssetCreate extends Component {
     }
     renderHierarchyTypes() {
         if (!this.props.data.loading) {
-            //console.log("hierarchyTypes in render(): ", this.state.hierarchyTypes);
             return (
                 this.state.hierarchyTypes.map(hierarchyType => {
                     return <Option key={hierarchyType.id} value={hierarchyType.id}>{hierarchyType.description}</Option>;
@@ -343,7 +318,6 @@ class AssetCreate extends Component {
     }
     renderAssetClasses() {
         if (!this.props.data.loading) {
-            //console.log("assetClasses in render(): ", this.state.assetClasses);
             return (
                 this.state.assetClasses.map(assetClass => {
                     return <Option key={assetClass.classid} value={assetClass.classid}>{assetClass.description}</Option>;
@@ -353,7 +327,6 @@ class AssetCreate extends Component {
     }
     renderMasters() {
         if (!this.props.data.loading) {
-            //console.log("assetMasters in render(): ", this.state.assetMasters);
             return (
                 this.state.assetMasters.map(assetMaster => {
                     return <Option key={assetMaster.id} value={assetMaster.id}>{assetMaster.name}</Option>;
@@ -361,8 +334,10 @@ class AssetCreate extends Component {
             );
         }
     }
+    setClassId(classId) {
+         this.setState({ classId })
+    }
     loadMasters(selectedHierarchyTypeId) {
-        console.log("VALUE FOR LOADMASTERS: ", selectedHierarchyTypeId);
         this.setState({ hierarchyTypeId: selectedHierarchyTypeId, masterId: null });
         this.props.client.query({
             query: findByHierarchyTypeId,
@@ -370,7 +345,6 @@ class AssetCreate extends Component {
                 hierarchyTypeId: masterHierarchyType
             }
         }).then((result) => {
-            console.log("result: ", result);
             this.setState({ assetMasters: result.data.assetMasterByHierarchyTypeId });
         });
     }
@@ -428,11 +402,6 @@ class AssetCreate extends Component {
                         }
                     </div>
                     <Form onSubmit={this.onSubmit.bind(this)} className="ant-advanced-search-form">
-                        {/* <Row>
-                            <FormItemLabel value="Contract: " />
-                            <FormItemCombo value={this.state.ContractID} onChange={(value) => this.setState({ ContractID: value })}
-                                renderOptions={this.renderContracts.bind(this)} />
-                        </Row> */}
                         <Row>
                             <FormItemCombo
                                 colLayout={colLayout}
@@ -443,7 +412,6 @@ class AssetCreate extends Component {
                                 idValue={this.state.hierarchyTypeId}
                                 labelValue={"Hierarchy Type"}
                                 valueFieldName={"hierarchyTypeId"}
-                                valuePropName={"value"}
                                 required={true}
                                 requiredMessage={"Hierarchy Type is required"}
                                 onChange={this.loadMasters.bind(this)}
@@ -451,6 +419,33 @@ class AssetCreate extends Component {
                                 descriptionFieldName={"description"}
                                 form={this.props.form}
                             />
+                            <FormItemCombo
+                                colLayout={colLayout}
+                                edit={this.state.edit}
+                                readOnly={this.state.readOnly}
+                                options={this.state.assetClasses}
+                                formItemLayout={this.state.formItemLayout}
+                                idValue={this.state.classId}
+                                labelValue={"Class"}
+                                valueFieldName={"classId"}
+                                onChange={this.setClassId}
+                                renderOptions={this.renderAssetClasses.bind(this)}
+                                descriptionFieldName={"description"}
+                                form={this.props.form}
+                            />
+                            {/* <Col {...colLayout}>
+                                {(this.state.edit && this.state.readOnly && this.state.assetClasses.length > 0) ?
+                                    (this.state.classId > 0) ?
+                                        <FormItem label="Class" {...formItemLayout}>
+                                            <label>{this.state.assetClasses.filter(e => e.classid == this.state.classId)[0].description}</label>
+                                        </FormItem> : <FormItem label="Class" {...formItemLayout}></FormItem> :
+                                    <FormItem label="Class" {...formItemLayout}>
+                                        <Select value={this.state.classId} onChange={(value) => this.setState({ classId: value })} >
+                                            {this.renderAssetClasses()}
+                                        </Select>
+                                    </FormItem>
+                                }
+                            </Col> */}
                             {/* <Col {...colLayout}>
                                 {(this.state.edit && this.state.readOnly && this.state.hierarchyTypes.length > 0) ?
                                     <FormItem label="Hierarchy Type" {...formItemLayout}>
@@ -477,19 +472,6 @@ class AssetCreate extends Component {
                                     </FormItem>
                                 }
                             </Col> */}
-                            <Col {...colLayout}>
-                                {(this.state.edit && this.state.readOnly && this.state.assetClasses.length > 0) ?
-                                    (this.state.classId > 0) ?
-                                        <FormItem label="Class" {...formItemLayout}>
-                                            <label>{this.state.assetClasses.filter(e => e.classid == this.state.classId)[0].description}</label>
-                                        </FormItem> : <FormItem label="Class" {...formItemLayout}></FormItem> :
-                                    <FormItem label="Class" {...formItemLayout}>
-                                        <Select value={this.state.classId} onChange={(value) => this.setState({ classId: value })} >
-                                            {this.renderAssetClasses()}
-                                        </Select>
-                                    </FormItem>
-                                }
-                            </Col>
                         </Row>
                         <Row>
                             <Col {...colLayout}>
@@ -586,7 +568,7 @@ class AssetCreate extends Component {
                                                     message: 'Acquisition Date is required',
                                                 }],
                                             })(
-                                                <DatePicker style={{ width: '100%' }} onChange={(date, dateString) => { this.setState({ acquisitionDate: date }) }} />
+                                                <DatePicker style={{ width: '100%' }} onChange={(date) => { this.setState({ acquisitionDate: date }) }} />
                                             )
                                         }
                                     </FormItem>
@@ -607,7 +589,7 @@ class AssetCreate extends Component {
                                                     message: 'Service Date is required',
                                                 }],
                                             })(
-                                                <DatePicker style={{ width: '100%' }} onChange={(date, dateString) => { this.setState({ serviceDate: date }) }} />
+                                                <DatePicker style={{ width: '100%' }} onChange={(date) => { this.setState({ serviceDate: date }) }} />
                                             )
                                         }
                                     </FormItem>
@@ -630,7 +612,7 @@ class AssetCreate extends Component {
                                                     message: 'Retirement Date is required',
                                                 }],
                                             })(
-                                                <DatePicker style={{ width: '100%' }} onChange={(date, dateString) => { this.setState({ retirementDate: date }) }} />
+                                                <DatePicker style={{ width: '100%' }} onChange={(date) => { this.setState({ retirementDate: date }) }} />
                                             )
                                         }
                                     </FormItem>
@@ -691,30 +673,13 @@ class AssetCreate extends Component {
                                 }
                             </Col>
                         </Row>
-                        <br>
-                        </br>
-                        {/* <Row>
-                            <Col {...colLayout} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                                <Button type="primary" style={{ width: '100%' }} size="large" htmlType="submit">Submit</Button>
-                            </Col>
-                        </Row> */}
-                        {/* <Row>
-                            <Col span={8} />
-                            <Col span={8} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                                <Button type="primary" size="large" htmlType="submit">Submit</Button>
-                            </Col>
-                            <Col span={8} />
-                        </Row> */}
+                        <br />
                         <Row>
                             <Col {...colLayout}>
-                                {/* <Col {...colLayout} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}> */}
                                 <FormItem label=" " colon={false} {...formItemLayout}>
-                                    {/* <div style={{ justifyContent: 'space-between' }}> */}
                                     <Button type="primary" size="large" htmlType="submit">Submit</Button>
                                     {" "}
-                                    {/* <Button style={{display: this.state.readOnly ? 'block': 'none'}} type="primary" size="large" onClick={() => this.setState({readOnly: false})}>Edit</Button> */}
                                     <Button type="primary" size="large" onClick={() => this.setState(prevState => ({ readOnly: !prevState.readOnly }))}>{this.state.readOnly ? "Edit" : "Cancel"}</Button>
-                                    {/* </div> */}
                                 </FormItem>
                             </Col>
                         </Row>
@@ -728,7 +693,6 @@ class AssetCreate extends Component {
                                 <h2>Components</h2>
                                 <Col>
                                     <Table pagination={{ pageSize: 10 }}
-                                        // rowSelection={rowSelection}
                                         dataSource={this.state.components}
                                         columns={this.columns}
                                         rowKey={record => record.id} />
@@ -737,12 +701,6 @@ class AssetCreate extends Component {
                             <div></div>
                         }
                     </Form>
-                    {/* <div>
-                        {(this.props.data.loading) ?
-                            <AssetComponents components={this.state.components} masterId={this.state.id} />
-                            : <div></div>
-                        }
-                    </div> */}
                 </div>
             );
         }

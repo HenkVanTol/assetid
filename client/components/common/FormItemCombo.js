@@ -13,7 +13,6 @@ class FormItemCombo extends Component {
             idValue,
             labelValue,
             valueFieldName,
-            valuePropName,
             required,
             requiredMessage,
             onChange,
@@ -31,7 +30,7 @@ class FormItemCombo extends Component {
                         {
                             form.getFieldDecorator(valueFieldName, {
                                 initialValue: idValue,
-                                valuePropName: valuePropName,
+                                valuePropName: "value",
                                 rules: [{
                                     required: required,
                                     message: requiredMessage,
