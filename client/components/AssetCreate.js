@@ -50,7 +50,12 @@ let state = {
 class AssetCreate extends Component {
     constructor(props) {
         super(props);
+        //Bind functions in constructor to prevent re-rendering of child components
         this.setClassId = this.setClassId.bind(this);
+        this.renderAssetClasses = this.renderAssetClasses.bind(this);
+        this.renderHierarchyTypes = this.renderHierarchyTypes.bind(this);
+        this.loadMasters = this.loadMasters.bind(this);
+
         this.columns = [{
             title: 'Name',
             dataIndex: 'name',
@@ -335,7 +340,7 @@ class AssetCreate extends Component {
         }
     }
     setClassId(classId) {
-         this.setState({ classId })
+        this.setState({ classId })
     }
     loadMasters(selectedHierarchyTypeId) {
         this.setState({ hierarchyTypeId: selectedHierarchyTypeId, masterId: null });
@@ -414,9 +419,10 @@ class AssetCreate extends Component {
                                 valueFieldName={"hierarchyTypeId"}
                                 required={true}
                                 requiredMessage={"Hierarchy Type is required"}
-                                onChange={this.loadMasters.bind(this)}
-                                renderOptions={this.renderHierarchyTypes.bind(this)}
+                                onChange={this.loadMasters}
+                                renderOptions={this.renderHierarchyTypes}
                                 descriptionFieldName={"description"}
+                                lookupIdFieldName={"id"}
                                 form={this.props.form}
                             />
                             <FormItemCombo
@@ -424,13 +430,14 @@ class AssetCreate extends Component {
                                 edit={this.state.edit}
                                 readOnly={this.state.readOnly}
                                 options={this.state.assetClasses}
-                                formItemLayout={this.state.formItemLayout}
+                                formItemLayout={formItemLayout}
                                 idValue={this.state.classId}
                                 labelValue={"Class"}
-                                valueFieldName={"classId"}
+                                valueFieldName={"classid"}
                                 onChange={this.setClassId}
-                                renderOptions={this.renderAssetClasses.bind(this)}
+                                renderOptions={this.renderAssetClasses}
                                 descriptionFieldName={"description"}
+                                lookupIdFieldName={"classid"}
                                 form={this.props.form}
                             />
                             {/* <Col {...colLayout}>
@@ -439,6 +446,22 @@ class AssetCreate extends Component {
                                         <FormItem label="Class" {...formItemLayout}>
                                             <label>{this.state.assetClasses.filter(e => e.classid == this.state.classId)[0].description}</label>
                                         </FormItem> : <FormItem label="Class" {...formItemLayout}></FormItem> :
+                                    <FormItem label="Class" {...formItemLayout}>
+                                        <Select value={this.state.classId} onChange={(value) => this.setState({ classId: value })} >
+                                            {this.renderAssetClasses()}
+                                        </Select>
+                                    </FormItem>
+                                }
+                            </Col> */}
+                            {/* <Col {...colLayout}>
+                                {(this.state.edit && this.state.readOnly && this.state.assetClasses.length > 0) ?
+                                    (this.state.classId > 0) ?
+                                        <FormItem label="Class" {...formItemLayout}>
+                                            <label>{this.state.assetClasses.filter(e => e.classid == this.state.classId)[0].description}</label>
+                                        </FormItem>
+                                        : 
+                                        <FormItem label="Class" {...formItemLayout}></FormItem>
+                                    :
                                     <FormItem label="Class" {...formItemLayout}>
                                         <Select value={this.state.classId} onChange={(value) => this.setState({ classId: value })} >
                                             {this.renderAssetClasses()}

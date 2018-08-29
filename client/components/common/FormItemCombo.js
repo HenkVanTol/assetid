@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { Col, Form, Select } from 'antd';
 const FormItem = Form.Item;
 
-class FormItemCombo extends Component {
+class FormItemCombo extends PureComponent {
     render() {
         let {
             colLayout,
@@ -18,14 +18,20 @@ class FormItemCombo extends Component {
             onChange,
             renderOptions,
             descriptionFieldName,
+            lookupIdFieldName,
             form
         } = this.props;
+        console.log("IDVALUE: ", idValue);
         return (
             <Col {...colLayout}>
                 {(edit && readOnly && options.length > 0) ?
-                    <FormItem label={labelValue} {...formItemLayout}>
-                        <label>{options.filter(e => e.id == idValue)[0][descriptionFieldName]}</label>
-                    </FormItem> :
+                    (idValue > 0) ?
+                        <FormItem label={labelValue} {...formItemLayout}>
+                            <label>{options.filter(e => e[lookupIdFieldName] == idValue)[0][descriptionFieldName]}</label>
+                        </FormItem>
+                        :
+                        <FormItem label={labelValue} {...formItemLayout}></FormItem>
+                    :
                     <FormItem label={labelValue} {...formItemLayout}>
                         {
                             form.getFieldDecorator(valueFieldName, {
