@@ -1,14 +1,44 @@
-import React, { Component } from 'react';
-import { Row, Col, Input, Form } from 'antd';
+import React, { PureComponent } from 'react';
+import { Col, Input, Form } from 'antd';
 const FormItem = Form.Item;
 
-class FormItemTextInput extends Component {
+class FormItemTextInput extends PureComponent {
     render() {
+        let {
+            colLayout,
+            readOnly,
+            edit,
+            formItemLayout,
+            labelValue,
+            valueFieldName,
+            required,
+            requiredMessage,
+            onChange,
+            stringValue,
+            form
+        } = this.props;
+        console.log("stringValue: ", stringValue);
         return (
-            <Col xs={12} sm={12} md={6} lg={6} xl={6}>
-                <FormItem>
-                    <Input style={{ width: '100%', marginRight: '8px', marginBottom: '8px' }} value={this.props.value} onChange={this.props.onChange} />
-                </FormItem>
+            <Col {...colLayout}>
+                {(edit && readOnly) ?
+                    <FormItem label={labelValue} {...formItemLayout}>
+                        <label>{stringValue}</label>
+                    </FormItem> :
+                    <FormItem label={labelValue} {...formItemLayout}>
+                        {
+                            form.getFieldDecorator(valueFieldName, {
+                                initialValue: stringValue,
+                                valuePropName: 'value',
+                                rules: [{
+                                    required: required,
+                                    message: requiredMessage,
+                                }],
+                            })(
+                                <Input onChange={(value) => onChange(value)} />
+                            )
+                        }
+                    </FormItem>
+                }
             </Col>
         );
     }

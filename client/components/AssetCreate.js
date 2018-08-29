@@ -18,6 +18,7 @@ import { RingLoader } from 'react-spinners';
 import { BarLoader } from 'react-spinners';
 import findByMasterId from '../queries/AssetMasterByMasterId';
 import FormItemCombo from '../components/common/FormItemCombo';
+import FormItemTextInput from '../components/common/FormItemTextInput';
 
 const masterHierarchyType = 1;
 const componentHierarchyType = 2;
@@ -55,6 +56,9 @@ class AssetCreate extends Component {
         this.renderAssetClasses = this.renderAssetClasses.bind(this);
         this.renderHierarchyTypes = this.renderHierarchyTypes.bind(this);
         this.loadMasters = this.loadMasters.bind(this);
+        this.setName = this.setName.bind(this);
+        this.setSerial = this.setSerial.bind(this);
+        this.setRegistration = this.setRegistration.bind(this);
 
         this.columns = [{
             title: 'Name',
@@ -342,6 +346,18 @@ class AssetCreate extends Component {
     setClassId(classId) {
         this.setState({ classId })
     }
+    setName(name) {
+        this.setState({ name })
+    }
+    setSerial(serial) {
+        this.setState({ serial })
+    }
+    setDescription(description) {
+        this.setState({ description })
+    }
+    setRegistration(registration) {
+        this.setState({ registration })
+    }
     loadMasters(selectedHierarchyTypeId) {
         this.setState({ hierarchyTypeId: selectedHierarchyTypeId, masterId: null });
         this.props.client.query({
@@ -440,140 +456,60 @@ class AssetCreate extends Component {
                                 lookupIdFieldName={"classid"}
                                 form={this.props.form}
                             />
-                            {/* <Col {...colLayout}>
-                                {(this.state.edit && this.state.readOnly && this.state.assetClasses.length > 0) ?
-                                    (this.state.classId > 0) ?
-                                        <FormItem label="Class" {...formItemLayout}>
-                                            <label>{this.state.assetClasses.filter(e => e.classid == this.state.classId)[0].description}</label>
-                                        </FormItem> : <FormItem label="Class" {...formItemLayout}></FormItem> :
-                                    <FormItem label="Class" {...formItemLayout}>
-                                        <Select value={this.state.classId} onChange={(value) => this.setState({ classId: value })} >
-                                            {this.renderAssetClasses()}
-                                        </Select>
-                                    </FormItem>
-                                }
-                            </Col> */}
-                            {/* <Col {...colLayout}>
-                                {(this.state.edit && this.state.readOnly && this.state.assetClasses.length > 0) ?
-                                    (this.state.classId > 0) ?
-                                        <FormItem label="Class" {...formItemLayout}>
-                                            <label>{this.state.assetClasses.filter(e => e.classid == this.state.classId)[0].description}</label>
-                                        </FormItem>
-                                        : 
-                                        <FormItem label="Class" {...formItemLayout}></FormItem>
-                                    :
-                                    <FormItem label="Class" {...formItemLayout}>
-                                        <Select value={this.state.classId} onChange={(value) => this.setState({ classId: value })} >
-                                            {this.renderAssetClasses()}
-                                        </Select>
-                                    </FormItem>
-                                }
-                            </Col> */}
-                            {/* <Col {...colLayout}>
-                                {(this.state.edit && this.state.readOnly && this.state.hierarchyTypes.length > 0) ?
-                                    <FormItem label="Hierarchy Type" {...formItemLayout}>
-                                        <label>{this.state.hierarchyTypes.filter(e => e.id == this.state.hierarchyTypeId)[0].description}</label>
-                                    </FormItem> :
-                                    <FormItem label="Hierarchy Type" {...formItemLayout}>
-                                        {
-                                            getFieldDecorator('hierarchyTypeId', {
-                                                initialValue: this.state.hierarchyTypeId,
-                                                valuePropName: 'value',
-                                                rules: [{
-                                                    required: true,
-                                                    message: 'Hierarchy Type is required',
-                                                }],
-                                            })(
-                                                // <Select onChange={(value) => this.setState({ hierarchyTypeId: value })} >
-                                                //     {this.renderHierarchyTypes()}
-                                                // </Select>
-                                                <Select onChange={(value) => this.loadMasters(value)} >
-                                                    {this.renderHierarchyTypes()}
-                                                </Select>
-                                            )
-                                        }
-                                    </FormItem>
-                                }
-                            </Col> */}
                         </Row>
                         <Row>
-                            <Col {...colLayout}>
-                                {(this.state.edit && this.state.readOnly) ?
-                                    <FormItem label="Name" {...formItemLayout}>
-                                        <label>{this.state.name}</label>
-                                    </FormItem> :
-                                    <FormItem label="Name" {...formItemLayout}>
-                                        {
-                                            getFieldDecorator('name', {
-                                                initialValue: this.state.name,
-                                                valuePropName: 'value',
-                                                rules: [{
-                                                    required: true,
-                                                    message: 'Name is required',
-                                                }],
-                                            })(
-                                                <Input onChange={e => this.setState({ name: e.target.value })} />
-                                            )
-                                        }
-                                    </FormItem>
-                                }
-                            </Col>
-                            <Col {...colLayout}>
-                                {(this.state.edit && this.state.readOnly) ?
-                                    <FormItem label="Description" {...formItemLayout}>
-                                        <label>{this.state.description}</label>
-                                    </FormItem> :
-                                    <FormItem label="Description" {...formItemLayout}>
-                                        {
-                                            <Input value={this.state.description} onChange={e => this.setState({ description: e.target.value })} />
-                                        }
-                                    </FormItem>
-                                }
-                            </Col>
+                            <FormItemTextInput
+                                colLayout={colLayout}
+                                edit={this.state.edit}
+                                readOnly={this.state.readOnly}
+                                formItemLayout={formItemLayout}
+                                labelValue={"Name"}
+                                valueFieldName={"name"}
+                                onChange={this.setName}
+                                stringValue={this.state.name}
+                                form={this.props.form}
+                                required={true}
+                                requiredMessage={"Name is required"}
+                            />
+                            <FormItemTextInput
+                                colLayout={colLayout}
+                                edit={this.state.edit}
+                                readOnly={this.state.readOnly}
+                                formItemLayout={formItemLayout}
+                                labelValue={"Description"}
+                                valueFieldName={"description"}
+                                onChange={this.setDescription}
+                                stringValue={this.state.description}
+                                form={this.props.form}
+                            />
                         </Row>
                         <Row>
-                            <Col {...colLayout}>
-                                {(this.state.edit && this.state.readOnly) ?
-                                    <FormItem label="Serial" {...formItemLayout}>
-                                        <label>{this.state.serial}</label>
-                                    </FormItem> :
-                                    <FormItem label="Serial" {...formItemLayout}>
-                                        {
-                                            getFieldDecorator('serial', {
-                                                initialValue: this.state.serial,
-                                                valuePropName: 'value',
-                                                rules: [{
-                                                    required: true,
-                                                    message: 'Serial is required',
-                                                }],
-                                            })(
-                                                <Input onChange={e => this.setState({ serial: e.target.value })} />
-                                            )
-                                        }
-                                    </FormItem>
-                                }
-                            </Col>
-                            <Col {...colLayout}>
-                                {(this.state.edit && this.state.readOnly) ?
-                                    <FormItem label="Registration" {...formItemLayout}>
-                                        <label>{this.state.registration}</label>
-                                    </FormItem> :
-                                    <FormItem label="Registration" {...formItemLayout}>
-                                        {
-                                            getFieldDecorator('Registration', {
-                                                initialValue: this.state.registration,
-                                                valuePropName: 'value',
-                                                rules: [{
-                                                    required: true,
-                                                    message: 'Registration is required',
-                                                }],
-                                            })(
-                                                <Input onChange={e => this.setState({ registration: e.target.value })} />
-                                            )
-                                        }
-                                    </FormItem>
-                                }
-                            </Col>
+                            <FormItemTextInput
+                                colLayout={colLayout}
+                                edit={this.state.edit}
+                                readOnly={this.state.readOnly}
+                                formItemLayout={formItemLayout}
+                                labelValue={"Serial"}
+                                valueFieldName={"serial"}
+                                onChange={this.setSerial}
+                                stringValue={this.state.serial}
+                                form={this.props.form}
+                                required={true}
+                                requiredMessage={"Serial is required"}
+                            />
+                            <FormItemTextInput
+                                colLayout={colLayout}
+                                edit={this.state.edit}
+                                readOnly={this.state.readOnly}
+                                formItemLayout={formItemLayout}
+                                labelValue={"Registration"}
+                                valueFieldName={"registration"}
+                                onChange={this.setRegistration}
+                                stringValue={this.state.registration}
+                                form={this.props.form}
+                                required={true}
+                                requiredMessage={"Registration is required"}
+                            />
                         </Row>
                         <Row>
                             <Col {...colLayout}>
