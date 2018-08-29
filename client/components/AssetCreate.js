@@ -19,6 +19,7 @@ import { BarLoader } from 'react-spinners';
 import findByMasterId from '../queries/AssetMasterByMasterId';
 import FormItemCombo from '../components/common/FormItemCombo';
 import FormItemTextInput from '../components/common/FormItemTextInput';
+import FormItemDatePicker from '../components/common/FormItemDatePicker';
 
 const masterHierarchyType = 1;
 const componentHierarchyType = 2;
@@ -59,6 +60,7 @@ class AssetCreate extends Component {
         this.setName = this.setName.bind(this);
         this.setSerial = this.setSerial.bind(this);
         this.setRegistration = this.setRegistration.bind(this);
+        this.setAcquisitionDate = this.setAcquisitionDate.bind(this);
 
         this.columns = [{
             title: 'Name',
@@ -358,6 +360,9 @@ class AssetCreate extends Component {
     setRegistration(registration) {
         this.setState({ registration })
     }
+    setAcquisitionDate(acquisitionDate) {
+        this.setState({ acquisitionDate })
+    }
     loadMasters(selectedHierarchyTypeId) {
         this.setState({ hierarchyTypeId: selectedHierarchyTypeId, masterId: null });
         this.props.client.query({
@@ -512,7 +517,20 @@ class AssetCreate extends Component {
                             />
                         </Row>
                         <Row>
-                            <Col {...colLayout}>
+                            <FormItemDatePicker
+                                colLayout={colLayout}
+                                edit={this.state.edit}
+                                readOnly={this.state.readOnly}
+                                formItemLayout={formItemLayout}
+                                dateValue={this.state.acquisitionDate}
+                                labelValue={"Acquisition Date"}
+                                valueFieldName={"acquisitionDate"}
+                                required={true}
+                                requiredMessage={"Acquisition Date is required"}
+                                onChange={this.setAcquisitionDate}
+                                form={this.props.form}
+                            />
+                            {/* <Col {...colLayout}>
                                 {(this.state.edit && this.state.readOnly) ?
                                     <FormItem label="Acquisition Date" {...formItemLayout}>
                                         <label>{this.state.acquisitionDate.format("DD/MM/YYYY")}</label>
@@ -532,7 +550,7 @@ class AssetCreate extends Component {
                                         }
                                     </FormItem>
                                 }
-                            </Col>
+                            </Col> */}
                             <Col {...colLayout}>
                                 {(this.state.edit && this.state.readOnly) ?
                                     <FormItem label="Service Date" {...formItemLayout}>

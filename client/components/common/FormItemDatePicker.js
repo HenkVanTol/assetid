@@ -4,11 +4,40 @@ const FormItem = Form.Item;
 
 class FormItemDatePicker extends Component {
     render() {
+        let {
+            colLayout,
+            readOnly,
+            edit,
+            formItemLayout,
+            dateValue,
+            labelValue,
+            valueFieldName,
+            required,
+            requiredMessage,
+            onChange,
+            form
+        } = this.props;
         return (
-            <Col xs={12} sm={12} md={6} lg={6} xl={6}>
-                <FormItem>
-                    <DatePicker style={{ width: '100%', marginRight: '8px', marginBottom: '8px' }} value={this.props.value} onChange={this.props.onChange} />
-                </FormItem>
+            <Col {...colLayout}>
+                {(edit && readOnly) ?
+                    <FormItem label={labelValue} {...formItemLayout}>
+                        <label>{dateValue.format("DD/MM/YYYY")}</label>
+                    </FormItem> :
+                    <FormItem label={labelValue} {...formItemLayout}>
+                        {
+                            form.getFieldDecorator(valueFieldName, {
+                                initialValue: dateValue,
+                                valuePropName: 'value',
+                                rules: [{
+                                    required: required,
+                                    message: requiredMessage,
+                                }],
+                            })(
+                                <DatePicker style={{ width: '100%' }} onChange={(value) => onChange(value)} />
+                            )
+                        }
+                    </FormItem>
+                }
             </Col>
         );
     }
