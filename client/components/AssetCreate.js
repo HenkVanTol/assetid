@@ -255,9 +255,6 @@ class AssetCreate extends Component {
                     id
                 } = this.state;
 
-                console.log("this.state.purchaseOrderNumber: ", this.state.purchaseOrderNumber);
-                console.log("PO: ", purchaseOrderNumber);
-
                 if (this.state.edit == true) {
                     this.props.client.mutate({
                         mutation: update,
