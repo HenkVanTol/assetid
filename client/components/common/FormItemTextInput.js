@@ -15,8 +15,12 @@ class FormItemTextInput extends PureComponent {
             requiredMessage,
             onChange,
             stringValue,
-            form
+            form,
+            type
         } = this.props;
+        if (!type) {
+            type = "text";
+        }
         console.log("stringValue: ", stringValue);
         return (
             <Col {...colLayout}>
@@ -34,7 +38,7 @@ class FormItemTextInput extends PureComponent {
                                     message: requiredMessage,
                                 }],
                             })(
-                                <Input onChange={(value) => onChange(value)} />
+                                <Input onChange={(value) => onChange(value)} type={type} />
                             )
                         }
                     </FormItem>

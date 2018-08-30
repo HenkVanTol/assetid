@@ -61,6 +61,10 @@ class AssetCreate extends Component {
         this.setSerial = this.setSerial.bind(this);
         this.setRegistration = this.setRegistration.bind(this);
         this.setAcquisitionDate = this.setAcquisitionDate.bind(this);
+        this.setServiceDate = this.setServiceDate.bind(this);
+        this.setRetirementDate = this.setRetirementDate.bind(this);
+        this.setPurchasePrice = this.setPurchasePrice.bind(this);
+        this.setPurchaseOrderNumber = this.setPurchaseOrderNumber.bind(this);
 
         this.columns = [{
             title: 'Name',
@@ -228,6 +232,7 @@ class AssetCreate extends Component {
         });
     }
     onSubmit(event) {
+        console.log("ONSUBMIT");
         event.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
@@ -248,6 +253,9 @@ class AssetCreate extends Component {
                     creatorId,
                     id
                 } = this.state;
+                
+                console.log("this.state.purchaseOrderNumber: ", this.state.purchaseOrderNumber);
+                console.log("PO: ", purchaseOrderNumber);
 
                 if (this.state.edit == true) {
                     this.props.client.mutate({
@@ -363,6 +371,18 @@ class AssetCreate extends Component {
     setAcquisitionDate(acquisitionDate) {
         this.setState({ acquisitionDate })
     }
+    setServiceDate(serviceDate) {
+        this.setState({ serviceDate })
+    }
+    setRetirementDate(retirementDate) {
+        this.setState({ retirementDate })
+    }
+    setPurchasePrice(purchasePrice) {
+        this.setState({ purchasePrice })
+    }
+    setPurchaseOrderNumber(purchaseOrderNumber) {
+        this.setState({ purchaseOrderNumber })
+    }
     loadMasters(selectedHierarchyTypeId) {
         this.setState({ hierarchyTypeId: selectedHierarchyTypeId, masterId: null });
         this.props.client.query({
@@ -389,7 +409,6 @@ class AssetCreate extends Component {
             )
         }
         else {
-            const { getFieldDecorator } = this.props.form;
             const formItemLayout = {
                 labelCol: {
                     xs: { span: 12 },
@@ -530,93 +549,62 @@ class AssetCreate extends Component {
                                 onChange={this.setAcquisitionDate}
                                 form={this.props.form}
                             />
+                            <FormItemDatePicker
+                                colLayout={colLayout}
+                                edit={this.state.edit}
+                                readOnly={this.state.readOnly}
+                                formItemLayout={formItemLayout}
+                                dateValue={this.state.serviceDate}
+                                labelValue={"Service Date"}
+                                valueFieldName={"serviceDate"}
+                                required={true}
+                                requiredMessage={"Service Date is required"}
+                                onChange={this.setServiceDate}
+                                form={this.props.form}
+                            />
+                        </Row>
+                        <Row>
+                            <FormItemDatePicker
+                                colLayout={colLayout}
+                                edit={this.state.edit}
+                                readOnly={this.state.readOnly}
+                                formItemLayout={formItemLayout}
+                                dateValue={this.state.retirementDate}
+                                labelValue={"Retirement Date"}
+                                valueFieldName={"retirementDate"}
+                                required={true}
+                                requiredMessage={"Retirement Date is required"}
+                                onChange={this.setRetirementDate}
+                                form={this.props.form}
+                            />
+                            <FormItemTextInput
+                                colLayout={colLayout}
+                                edit={this.state.edit}
+                                readOnly={this.state.readOnly}
+                                formItemLayout={formItemLayout}
+                                labelValue={"Purchase Price"}
+                                valueFieldName={"purchasePrice"}
+                                onChange={this.setPurchasePrice}
+                                stringValue={this.state.purchasePrice}
+                                form={this.props.form}
+                                required={true}
+                                requiredMessage={"Purchase Price is required"}
+                                type={"number"}
+                            />
+                        </Row>
+                        <Row>
+                            <FormItemTextInput
+                                colLayout={colLayout}
+                                edit={this.state.edit}
+                                readOnly={this.state.readOnly}
+                                formItemLayout={formItemLayout}
+                                labelValue={"Purchase Order"}
+                                valueFieldName={"purchaseOrder"}
+                                onChange={this.setPurchaseOrderNumber}
+                                stringValue={this.state.purchaseOrderNumber}
+                                form={this.props.form}
+                            />
                             {/* <Col {...colLayout}>
-                                {(this.state.edit && this.state.readOnly) ?
-                                    <FormItem label="Acquisition Date" {...formItemLayout}>
-                                        <label>{this.state.acquisitionDate.format("DD/MM/YYYY")}</label>
-                                    </FormItem> :
-                                    <FormItem label="Acquisition Date" {...formItemLayout}>
-                                        {
-                                            getFieldDecorator('acquisitionDate', {
-                                                initialValue: this.state.acquisitionDate,
-                                                valuePropName: 'value',
-                                                rules: [{
-                                                    required: true,
-                                                    message: 'Acquisition Date is required',
-                                                }],
-                                            })(
-                                                <DatePicker style={{ width: '100%' }} onChange={(date) => { this.setState({ acquisitionDate: date }) }} />
-                                            )
-                                        }
-                                    </FormItem>
-                                }
-                            </Col> */}
-                            <Col {...colLayout}>
-                                {(this.state.edit && this.state.readOnly) ?
-                                    <FormItem label="Service Date" {...formItemLayout}>
-                                        <label>{this.state.serviceDate.format("DD/MM/YYYY")}</label>
-                                    </FormItem> :
-                                    <FormItem label="Service Date" {...formItemLayout}>
-                                        {
-                                            getFieldDecorator('serviceDate', {
-                                                initialValue: this.state.serviceDate,
-                                                valuePropName: 'value',
-                                                rules: [{
-                                                    required: true,
-                                                    message: 'Service Date is required',
-                                                }],
-                                            })(
-                                                <DatePicker style={{ width: '100%' }} onChange={(date) => { this.setState({ serviceDate: date }) }} />
-                                            )
-                                        }
-                                    </FormItem>
-                                }
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col {...colLayout}>
-                                {(this.state.edit && this.state.readOnly) ?
-                                    <FormItem label="Retirement Date" {...formItemLayout}>
-                                        <label>{this.state.retirementDate.format("DD/MM/YYYY")}</label>
-                                    </FormItem> :
-                                    <FormItem label="Retirement Date" {...formItemLayout}>
-                                        {
-                                            getFieldDecorator('retirementDate', {
-                                                initialValue: this.state.retirementDate,
-                                                valuePropName: 'value',
-                                                rules: [{
-                                                    required: true,
-                                                    message: 'Retirement Date is required',
-                                                }],
-                                            })(
-                                                <DatePicker style={{ width: '100%' }} onChange={(date) => { this.setState({ retirementDate: date }) }} />
-                                            )
-                                        }
-                                    </FormItem>
-                                }
-                            </Col>
-                            <Col {...colLayout}>
-                                {(this.state.edit && this.state.readOnly) ?
-                                    <FormItem label="Purchase Price" {...formItemLayout}>
-                                        <label>{this.state.purchasePrice}</label>
-                                    </FormItem> :
-                                    <FormItem label="Purchase Price" {...formItemLayout}>
-                                        {getFieldDecorator('purchasePrice', {
-                                            initialValue: this.state.purchasePrice,
-                                            valuePropName: 'value',
-                                            rules: [{
-                                                required: true,
-                                                message: 'Purchase Price is required',
-                                            }],
-                                        })(
-                                            <Input onChange={e => this.setState({ purchasePrice: e.target.value })} type="number" />
-                                        )}
-                                    </FormItem>
-                                }
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col {...colLayout}>
                                 {(this.state.edit && this.state.readOnly) ?
                                     <FormItem label="Purchase Order" {...formItemLayout}>
                                         <label>{this.state.purchaseOrderNumber}</label>
@@ -625,7 +613,7 @@ class AssetCreate extends Component {
                                         <Input value={this.state.purchaseOrderNumber} onChange={e => this.setState({ purchaseOrderNumber: e.target.value })} />
                                     </FormItem>
                                 }
-                            </Col>
+                            </Col> */}
 
                             <Col {...colLayout}>
                                 {(this.state.edit && this.state.readOnly && this.state.assetMasters.length > 0 && this.state.hierarchyTypeId == componentHierarchyType)
