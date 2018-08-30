@@ -58,6 +58,7 @@ class AssetCreate extends Component {
         this.renderHierarchyTypes = this.renderHierarchyTypes.bind(this);
         this.loadMasters = this.loadMasters.bind(this);
         this.setName = this.setName.bind(this);
+        this.setDescription = this.setDescription.bind(this);
         this.setSerial = this.setSerial.bind(this);
         this.setRegistration = this.setRegistration.bind(this);
         this.setAcquisitionDate = this.setAcquisitionDate.bind(this);
@@ -253,7 +254,7 @@ class AssetCreate extends Component {
                     creatorId,
                     id
                 } = this.state;
-                
+
                 console.log("this.state.purchaseOrderNumber: ", this.state.purchaseOrderNumber);
                 console.log("PO: ", purchaseOrderNumber);
 
@@ -356,17 +357,17 @@ class AssetCreate extends Component {
     setClassId(classId) {
         this.setState({ classId })
     }
-    setName(name) {
-        this.setState({ name })
+    setName(e) {
+        this.setState({ name: e.target.value })
     }
-    setSerial(serial) {
-        this.setState({ serial })
+    setSerial(e) {
+        this.setState({ serial: e.target.value })
     }
-    setDescription(description) {
-        this.setState({ description })
+    setDescription(e) {
+        this.setState({ description: e.target.value })
     }
-    setRegistration(registration) {
-        this.setState({ registration })
+    setRegistration(e) {
+        this.setState({ registration: e.target.value })
     }
     setAcquisitionDate(acquisitionDate) {
         this.setState({ acquisitionDate })
@@ -377,11 +378,11 @@ class AssetCreate extends Component {
     setRetirementDate(retirementDate) {
         this.setState({ retirementDate })
     }
-    setPurchasePrice(purchasePrice) {
-        this.setState({ purchasePrice })
+    setPurchasePrice(e) {
+        this.setState({ purchasePrice: e.target.value })
     }
-    setPurchaseOrderNumber(purchaseOrderNumber) {
-        this.setState({ purchaseOrderNumber })
+    setPurchaseOrderNumber(e) {
+        this.setState({ purchaseOrderNumber: e.target.value })
     }
     loadMasters(selectedHierarchyTypeId) {
         this.setState({ hierarchyTypeId: selectedHierarchyTypeId, masterId: null });
