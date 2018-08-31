@@ -66,6 +66,8 @@ class AssetCreate extends Component {
         this.setRetirementDate = this.setRetirementDate.bind(this);
         this.setPurchasePrice = this.setPurchasePrice.bind(this);
         this.setPurchaseOrderNumber = this.setPurchaseOrderNumber.bind(this);
+        this.renderMasters = this.renderMasters.bind(this);
+        this.setMasterId = this.setMasterId.bind(this);
 
         this.columns = [{
             title: 'Name',
@@ -354,6 +356,9 @@ class AssetCreate extends Component {
     setClassId(classId) {
         this.setState({ classId })
     }
+    setMasterId(masterId) {
+        this.setState({ masterId })
+    }
     setName(e) {
         this.setState({ name: e.target.value })
     }
@@ -613,7 +618,24 @@ class AssetCreate extends Component {
                                 }
                             </Col> */}
 
-                            <Col {...colLayout}>
+                            <FormItemCombo
+                                colLayout={colLayout}
+                                edit={this.state.edit}
+                                readOnly={this.state.readOnly}
+                                options={this.state.assetMasters}
+                                formItemLayout={formItemLayout}
+                                idValue={this.state.masterId}
+                                labelValue={"Master"}
+                                valueFieldName={"masterid"}
+                                onChange={this.setMasterId}
+                                renderOptions={this.renderMasters}
+                                descriptionFieldName={"description"}
+                                lookupIdFieldName={"id"}
+                                form={this.props.form}
+                                disabled={this.state.hierarchyTypeId != componentHierarchyType}
+                            />
+
+                            {/* <Col {...colLayout}>
                                 {(this.state.edit && this.state.readOnly && this.state.assetMasters.length > 0 && this.state.hierarchyTypeId == componentHierarchyType)
                                     ?
                                     (this.state.masterId > 0)
@@ -634,7 +656,7 @@ class AssetCreate extends Component {
                                         :
                                         <FormItem label="Master" {...formItemLayout}></FormItem>
                                 }
-                            </Col>
+                            </Col> */}
                         </Row>
                         <br />
                         <Row>

@@ -24,20 +24,20 @@ const app = express();
 // };
 
 //MySQL connection settings
-const options = {
-  host: 'db4free.net',
-  port: 3306,
-  user: 'assetiduser',
-  password: 'Mechanics1_AssetID',
-  database: 'assetid'
-};
 // const options = {
-//   host: 'localhost',
+//   host: 'db4free.net',
 //   port: 3306,
-//   user: 'root',
-//   password: 'Mechanics!',
+//   user: 'assetiduser',
+//   password: 'Mechanics1_AssetID',
 //   database: 'assetid'
 // };
+const options = {
+  host: 'localhost',
+  port: 3306,
+  user: 'root',
+  password: 'Mechanics!',
+  database: 'assetid'
+};
 
 // db.connect(options)
 //   .then(console.log("MSSQL CONNECTION POOL CREATED."))
