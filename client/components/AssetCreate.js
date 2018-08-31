@@ -15,11 +15,11 @@ import { Link } from 'react-router';
 import toastr from 'toastr';
 import '../../node_modules/toastr/build/toastr.css';
 import { RingLoader } from 'react-spinners';
-import { BarLoader } from 'react-spinners';
 import findByMasterId from '../queries/AssetMasterByMasterId';
 import FormItemCombo from '../components/common/FormItemCombo';
 import FormItemTextInput from '../components/common/FormItemTextInput';
 import FormItemDatePicker from '../components/common/FormItemDatePicker';
+import { formItemLayout, colLayout } from '../layout/Layout';
 
 const masterHierarchyType = 1;
 const componentHierarchyType = 2;
@@ -412,29 +412,6 @@ class AssetCreate extends Component {
             )
         }
         else {
-            const formItemLayout = {
-                labelCol: {
-                    xs: { span: 12 },
-                    sm: { span: 12 },
-                    md: { span: 12 },
-                    lg: { span: 6 },
-                    xl: { span: 6 }
-                },
-                wrapperCol: {
-                    xs: { span: 12 },
-                    sm: { span: 12 },
-                    md: { span: 12 },
-                    lg: { span: 12 },
-                    xl: { span: 12 }
-                },
-            };
-            const colLayout = {
-                xs: { span: 24 },
-                sm: { span: 24 },
-                md: { span: 12 },
-                lg: { span: 12 },
-                xl: { span: 12 },
-            };
             return (
                 <div>
                     <div>
@@ -444,7 +421,7 @@ class AssetCreate extends Component {
                         }
                         {" "}
                         {
-                            (this.state.hierarchyTypeId == componentHierarchyType) ?
+                            (this.state.hierarchyTypeId == componentHierarchyType && this.state.masterId) ?
                                 <Link to={`/assetcreate/${this.state.masterId}`}>View Master</Link> :
                                 <div></div>
                         }
