@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { withApollo } from 'react-apollo';
 import moment from 'moment';
-import { Form, Row, Col, Input, Button, DatePicker, Select, Table } from 'antd';
+import { Form, Row, Col,  Button, Select, Table } from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
 import create from '../mutations/CreateAssetMaster';
@@ -237,7 +237,7 @@ class AssetCreate extends Component {
     onSubmit(event) {
         console.log("ONSUBMIT");
         event.preventDefault();
-        this.props.form.validateFields((err, values) => {
+        this.props.form.validateFields((err) => {
             if (!err) {
 
                 const {
@@ -584,16 +584,6 @@ class AssetCreate extends Component {
                                 stringValue={this.state.purchaseOrderNumber}
                                 form={this.props.form}
                             />
-                            {/* <Col {...colLayout}>
-                                {(this.state.edit && this.state.readOnly) ?
-                                    <FormItem label="Purchase Order" {...formItemLayout}>
-                                        <label>{this.state.purchaseOrderNumber}</label>
-                                    </FormItem> :
-                                    <FormItem label="Purchase Order" {...formItemLayout}>
-                                        <Input value={this.state.purchaseOrderNumber} onChange={e => this.setState({ purchaseOrderNumber: e.target.value })} />
-                                    </FormItem>
-                                }
-                            </Col> */}
 
                             <FormItemCombo
                                 colLayout={colLayout}

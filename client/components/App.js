@@ -1,9 +1,8 @@
 import React from 'react';
 import HeaderMenu from './Header';
 import SideMenu from './SideMenu';
-import { Layout, Menu, Breadcrumb, Icon, Avatar, Card } from 'antd';
-const { SubMenu } = Menu;
-const { Header, Content, Sider, Footer } = Layout;
+import { Layout } from 'antd';
+const { Header, Content, Footer } = Layout;
 //import imageName from './saflag.gif';
 
 const App = (props) => {
@@ -19,7 +18,6 @@ const App = (props) => {
                 <Layout>
                     <SideMenu />
                     <Layout style={{ padding: '0 24px' }}>
-                        {/* <Content style={{ background: '#fff', padding: '24px', margin: 0, minHeight: 500 }}> */}
                         <Content style={{ background: '#fff', padding: '24px', margin: 0, minHeight: 800 }}>
                             {props.children}
                         </Content>
